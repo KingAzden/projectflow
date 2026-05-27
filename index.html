@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ProjectFlow Screen Hub</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23ff5352'/%3E%3Ctext x='32' y='39' text-anchor='middle' font-family='Inter,Arial,sans-serif' font-size='22' font-weight='800' fill='white'%3EPF%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      color-scheme: dark;
+      --background: #0c1320;
+      --surface-lowest: #070e1b;
+      --surface-low: #151c29;
+      --surface: #19202d;
+      --surface-high: #232a38;
+      --surface-highest: #2e3543;
+      --on-surface: #dce2f5;
+      --on-surface-variant: #e4beba;
+      --outline: #ab8986;
+      --outline-variant: #5b403e;
+      --primary: #ffb3ae;
+      --primary-strong: #ff5352;
+      --primary-deep: #ba1724;
+      --secondary: #bcc7de;
+      --shadow: rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        linear-gradient(135deg, rgba(255, 83, 82, 0.10), transparent 26rem),
+        radial-gradient(circle at 85% 0%, rgba(188, 199, 222, 0.13), transparent 22rem),
+        var(--background);
+      color: var(--on-surface);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 2px solid var(--primary-strong);
+      outline-offset: 3px;
+    }
+
+    .shell {
+      width: min(1280px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 48px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 16px 0 40px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      border: 1px solid rgba(255, 179, 174, 0.4);
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--primary-strong), var(--primary-deep));
+      box-shadow: 0 0 28px rgba(255, 83, 82, 0.22);
+      color: white;
+      font-weight: 800;
+    }
+
+    .brand-text {
+      min-width: 0;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 24px;
+    }
+
+    .brand-subtitle {
+      margin: 2px 0 0;
+      color: var(--secondary);
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--secondary);
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 18px;
+    }
+
+    .status-pill {
+      border: 1px solid rgba(171, 137, 134, 0.38);
+      border-radius: 999px;
+      background: rgba(21, 28, 41, 0.78);
+      padding: 7px 12px;
+      white-space: nowrap;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.7fr);
+      align-items: end;
+      gap: 48px;
+      padding: 12px 0 36px;
+      border-bottom: 1px solid rgba(91, 64, 62, 0.9);
+    }
+
+    .eyebrow {
+      margin: 0 0 14px;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 16px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 760px;
+      margin: 0;
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 800;
+      letter-spacing: 0;
+      line-height: 1.02;
+    }
+
+    .hero-copy {
+      max-width: 720px;
+      margin: 18px 0 0;
+      color: var(--secondary);
+      font-size: 18px;
+      line-height: 28px;
+    }
+
+    .hero-panel {
+      border: 1px solid rgba(171, 137, 134, 0.28);
+      border-radius: 8px;
+      background: rgba(21, 28, 41, 0.74);
+      box-shadow: 0 20px 48px var(--shadow);
+      padding: 20px;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .metric {
+      min-width: 0;
+      border: 1px solid rgba(91, 64, 62, 0.65);
+      border-radius: 8px;
+      background: rgba(12, 19, 32, 0.64);
+      padding: 14px;
+    }
+
+    .metric-value {
+      display: block;
+      color: var(--on-surface);
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 30px;
+    }
+
+    .metric-label {
+      display: block;
+      margin-top: 4px;
+      color: var(--on-surface-variant);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 16px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 40px 0 20px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 32px;
+    }
+
+    .section-note {
+      max-width: 440px;
+      margin: 0;
+      color: var(--secondary);
+      font-size: 14px;
+      line-height: 22px;
+      text-align: right;
+    }
+
+    .screen-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .screen-card {
+      display: flex;
+      min-height: 100%;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid rgba(171, 137, 134, 0.22);
+      border-radius: 8px;
+      background: rgba(25, 32, 45, 0.92);
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.2);
+      transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .screen-card:hover {
+      border-color: rgba(255, 179, 174, 0.62);
+      box-shadow: 0 22px 54px rgba(0, 0, 0, 0.31), 0 0 20px rgba(255, 83, 82, 0.10);
+      transform: translateY(-2px);
+    }
+
+    .preview {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 16 / 10;
+      background: var(--surface-lowest);
+      border-bottom: 1px solid rgba(91, 64, 62, 0.74);
+    }
+
+    .preview.mobile {
+      aspect-ratio: 10 / 13;
+    }
+
+    .preview img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    .card-body {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      gap: 16px;
+      padding: 18px;
+    }
+
+    .card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      border: 1px solid rgba(255, 179, 174, 0.22);
+      border-radius: 999px;
+      background: rgba(255, 83, 82, 0.12);
+      color: var(--primary);
+      padding: 3px 9px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      line-height: 16px;
+      text-transform: uppercase;
+    }
+
+    .tag.secondary {
+      background: rgba(188, 199, 222, 0.09);
+      border-color: rgba(188, 199, 222, 0.18);
+      color: var(--secondary);
+    }
+
+    .card-title {
+      margin: 0;
+      color: var(--on-surface);
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 24px;
+    }
+
+    .card-description {
+      flex: 1;
+      margin: 0;
+      color: var(--secondary);
+      font-size: 14px;
+      line-height: 22px;
+    }
+
+    .card-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      width: 100%;
+      border: 1px solid rgba(255, 179, 174, 0.34);
+      border-radius: 4px;
+      background: transparent;
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 18px;
+      transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+    }
+
+    .card-link:hover {
+      border-color: var(--primary-strong);
+      background: rgba(255, 83, 82, 0.16);
+      color: white;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      margin-top: 44px;
+      border-top: 1px solid rgba(91, 64, 62, 0.9);
+      padding-top: 24px;
+      color: var(--secondary);
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .footer a {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    @media (max-width: 1080px) {
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+
+      .screen-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .section-note {
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .shell {
+        width: min(100% - 32px, 640px);
+        padding-top: 20px;
+      }
+
+      .topbar,
+      .section-head,
+      .footer {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .topbar {
+        gap: 16px;
+        padding-bottom: 28px;
+      }
+
+      .topbar-actions {
+        flex-wrap: wrap;
+      }
+
+      .hero {
+        padding-bottom: 28px;
+      }
+
+      h1 {
+        font-size: 36px;
+        line-height: 42px;
+      }
+
+      .hero-copy {
+        font-size: 16px;
+        line-height: 24px;
+      }
+
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .screen-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar" aria-label="ProjectFlow screen hub header">
+      <a class="brand" href="./" aria-label="ProjectFlow screen hub home">
+        <span class="brand-mark" aria-hidden="true">PF</span>
+        <span class="brand-text">
+          <span class="brand-title">ProjectFlow</span>
+          <span class="brand-subtitle">Static prototype hub</span>
+        </span>
+      </a>
+      <div class="topbar-actions" aria-label="Screen collection summary">
+        <span class="status-pill">11 screens</span>
+        <span class="status-pill">Static HTML</span>
+        <span class="status-pill">Kinetic Noir</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">Project task pipeline</p>
+          <h1 id="page-title">A connected hub for every ProjectFlow prototype.</h1>
+          <p class="hero-copy">
+            Browse the provided dashboard, pipeline, team, settings, drawer, mobile, onboarding, and notification screens without changing their original source pages.
+          </p>
+        </div>
+        <aside class="hero-panel" aria-label="Prototype coverage">
+          <div class="metrics">
+            <div class="metric">
+              <span class="metric-value">7</span>
+              <span class="metric-label">Product views</span>
+            </div>
+            <div class="metric">
+              <span class="metric-value">2</span>
+              <span class="metric-label">Mobile views</span>
+            </div>
+            <div class="metric">
+              <span class="metric-value">2</span>
+              <span class="metric-label">Email views</span>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section aria-labelledby="screen-library-title">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Screen library</p>
+            <h2 class="section-title" id="screen-library-title">Available prototypes</h2>
+          </div>
+          <p class="section-note">
+            Each preview opens the original standalone HTML screen from its source folder.
+          </p>
+        </div>
+
+        <div class="screen-grid">
+          <article class="screen-card">
+            <div class="preview">
+              <img src="project_pipeline_accessibility_fixed/screen.png" alt="Desktop project pipeline board preview" loading="lazy" />
+            </div>
+            <div class="card-body">
+              <div class="card-meta">
+                <span class="tag">Pipeline</span>
+                <span class="tag secondary">Desktop</span>
+              </div>
+              <h3 class="card-title">Project Pipeline</h3>
+              <p class="card-description">Kanban-style pipeline with accessibility fixes and dense project task states.</p>
+              <a class="card-link" href="project_pipeline_accessibility_fixed/code.html">Open screen</a>
+            </div>
+          </article>
+
+          <article class="screen-card">
+            <div class="preview mobile">
+              <img src="project_pipeline_mobile/screen.png" alt="Mobile project pipeline preview" loading="lazy" />
+            </div>
+            <div class="card-body">
+              <div class="card-meta">
+                <span class="tag">Pipeline</span>
+                <span class="tag secondary">Mobile</span>
+              </div>
+              <h3 class="card-title">Mobile Pipeline</h3>
+              <p class="card-description">Compact mobile task pipeline with bottom navigation and touch-sized task cards.</p>
+              <a class="card-link" href="project_pipeline_mobile/code.html">Open screen</a>
+            </div>
+          </article>
+
+          <article class="screen-card">
+            <div class="preview">
+              <img src="project_list_view_accessibility_fixed/screen.png" alt="Power-user task list view preview" loading="lazy" />
+            </div>
+            <div class="card-body">
+              <div class="card-meta">
+                <span class="tag">Tasks</span>
+                <span class="tag secondary">Desktop</span>
+              </div>
+              <h3 class="card-title">Power-User List View</h3>
+              <p class="card-description">High-density task table for scanning active deliverables, owners, status, and due dates.</p>
+              <a class="card-link" href="project_list_view_accessibility_fixed/code.html">Open screen</a>
+            </div>
+          </article>
+
+          <article class="screen-card">
+            <div class="preview">
+              <img src="task_detail_drawer_accessibility_fixed/screen.png" alt="Task detail drawer preview" loading="lazy" />
+            </div>
+            <div class="card-body">
+              <div class="card-meta">
+                <span class="tag">Task detail</span>
+                <span class="tag secondary">Drawer</span>
+              </div>
+              <h3 class="card-title">Task Detail Drawer</h3>
+              <p class="card-description">Focused task workspace with description, subtasks, assignee context, and comments.</p>
+              <a class="card-link" href="task_detail_drawer_accessibility_fixed/code.html">Open screen</a>
+            </div>
+          </article>
+
+          <article class="screen-card">
+            <div class="preview">
+              <img src="project_settings/screen.png" alt="Project settings preview" loading="lazy" />
+            </div>
+            <div class="card-body">
+              <div class="card-meta">
+                <span class="tag">Settings</span>
+                <span class="tag secondary">Desktop</span>
+              </div>
+              <h3 class="card-title">Project Settings</h3>
+              <p class="card-description">Administrative settings surface for project configuration and ownership controls.</p>
+              <a class="card-link" href="project_settings/code.html">Open screen</a>
+            </div>
+          </article>
+
+          <article class="screen-card">
+            <div class="preview">
+              <img src="team_management/screen.png" alt="Team management screen preview" loading="lazy" />
+            </div>
+            <div class="card-body">
+              <div class="card-meta">
+                <span class="tag">Team</span>
+                <span class="tag secondary">Desktop</span>
+              </div>
+              <h3 class="card-title">Team Management</h3>
+              <p class="card-description">Team administration view for members, roles, invitations, and account status.</p>
+              <a class="card-link" href="team_management/code.html">Open screen</a>
+            </div>
+          </article>
+
+          <article class="screen-card">
+            <div class="preview">
+              <img src="team_insights_dashboard_accessibility_fixed/screen.png" alt="Team insights dashboard preview" loading="lazy" />
+            </div>
+            <div class="card-body">
+              <div class="card-meta">
+                <span class="tag">Insights</span>
+                <span class="tag secondary">Desktop</span>
+              </div>
+              <h3 class="card-title">Team Insights Dashboard</h3>
+              <p class="card-description">Performance dashboard with metrics, charts, activity, and blocked work context.</p>
+              <a class="card-link" href="team_insights_dashboard_accessibility_fixed/code.html">Open screen</a>
+            </div>
+          </article>
+
+          <article class="screen-card">
+            <div class="preview mobile">
+              <img src="team_insights_dashboard_mobile/screen.png" alt="Mobile team insights dashboard preview" loading="lazy" />
+            </div>
+            <div class="card-body">
+              <div class="card-meta">
+                <span class="tag">Insights</span>
+                <span class="tag secondary">Mobile</span>
+              </div>
+              <h3 class="card-title">Mobile Team Insights</h3>
+              <p class="card-description">Mobile-first metrics view for real-time team performance and alerts.</p>
+              <a class="card-link" href="team_insights_dashboard_mobile/code.html">Open screen</a>
+            </div>
+          </article>
+
+          <article class="screen-card">
+            <div class="preview">
+              <img src="onboarding_empty_pipeline_state/screen.png" alt="Onboarding empty pipeline state preview" loading="lazy" />
+            </div>
+            <div class="card-body">
+              <div class="card-meta">
+                <span class="tag">Onboarding</span>
+                <span class="tag secondary">Empty state</span>
+              </div>
+              <h3 class="card-title">Getting Started</h3>
+              <p class="card-description">Empty pipeline onboarding state for guiding new teams toward their first project.</p>
+              <a class="card-link" href="onboarding_empty_pipeline_state/code.html">Open screen</a>
+            </div>
+          </article>
+
+          <article class="screen-card">
+            <div class="preview">
+              <img src="email_task_assignment_notification/screen.png" alt="Task assignment email notification preview" loading="lazy" />
+            </div>
+            <div class="card-body">
+              <div class="card-meta">
+                <span class="tag">Email</span>
+                <span class="tag secondary">Notification</span>
+              </div>
+              <h3 class="card-title">Task Assignment Email</h3>
+              <p class="card-description">Transactional assignment notification with task context, sender details, and CTA.</p>
+              <a class="card-link" href="email_task_assignment_notification/code.html">Open screen</a>
+            </div>
+          </article>
+
+          <article class="screen-card">
+            <div class="preview">
+              <img src="email_visual_rot_alert/screen.png" alt="Visual rot alert email preview" loading="lazy" />
+            </div>
+            <div class="card-body">
+              <div class="card-meta">
+                <span class="tag">Email</span>
+                <span class="tag secondary">Alert</span>
+              </div>
+              <h3 class="card-title">Visual Rot Alert</h3>
+              <p class="card-description">Critical pipeline stagnation alert with prominent status messaging and action path.</p>
+              <a class="card-link" href="email_visual_rot_alert/code.html">Open screen</a>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>Built as a static hub for the provided ProjectFlow prototype files.</span>
+      <a href="kinetic_noir/DESIGN.md">View design guidance</a>
+    </footer>
+  </div>
+</body>
+</html>

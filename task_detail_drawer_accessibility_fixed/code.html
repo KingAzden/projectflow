@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Task Detail Drawer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "surface-container-low": "#151c29",
+                "error": "#ffb4ab",
+                "on-secondary-fixed-variant": "#3c475a",
+                "surface-bright": "#323948",
+                "secondary": "#bcc7de",
+                "on-tertiary-container": "#5b020f",
+                "surface-container-high": "#232a38",
+                "surface-dim": "#0c1320",
+                "on-tertiary-fixed": "#410007",
+                "surface": "#0c1320",
+                "tertiary-fixed-dim": "#ffb3b1",
+                "primary": "#ffb3ae",
+                "tertiary-container": "#e46b6c",
+                "on-secondary-fixed": "#111c2d",
+                "on-secondary": "#263143",
+                "surface-container": "#19202d",
+                "secondary-fixed-dim": "#bcc7de",
+                "on-background": "#dce2f5",
+                "inverse-on-surface": "#2a303f",
+                "background": "#0c1320",
+                "tertiary": "#ffb3b1",
+                "surface-tint": "#ffb3ae",
+                "secondary-container": "#3e495d",
+                "primary-fixed": "#ffdad7",
+                "on-surface-variant": "#e4beba",
+                "primary-fixed-dim": "#ffb3ae",
+                "surface-variant": "#2e3543",
+                "outline": "#ab8986",
+                "on-tertiary-fixed-variant": "#842328",
+                "on-error-container": "#ffdad6",
+                "outline-variant": "#5b403e",
+                "on-primary-container": "#5c0008",
+                "secondary-fixed": "#d8e3fb",
+                "on-primary-fixed-variant": "#930014",
+                "surface-container-lowest": "#070e1b",
+                "primary-container": "#ff5352",
+                "error-container": "#93000a",
+                "on-surface": "#dce2f5",
+                "tertiary-fixed": "#ffdad8",
+                "on-primary": "#68000b",
+                "on-error": "#690005",
+                "on-tertiary": "#640a15",
+                "surface-container-highest": "#2e3543",
+                "on-secondary-container": "#aeb9d0",
+                "on-primary-fixed": "#410004",
+                "inverse-primary": "#ba1724",
+                "inverse-surface": "#dce2f5"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+        },
+        "spacing": {
+                "margin-desktop": "48px",
+                "unit": "8px",
+                "container-max": "1280px",
+                "gutter": "24px",
+                "margin-mobile": "16px"
+        },
+        "fontFamily": {
+                "headline-lg": [
+                        "Inter"
+                ],
+                "body-lg": [
+                        "Inter"
+                ],
+                "headline-md": [
+                        "Inter"
+                ],
+                "headline-lg-mobile": [
+                        "Inter"
+                ],
+                "body-md": [
+                        "Inter"
+                ],
+                "label-sm": [
+                        "Inter"
+                ],
+                "label-md": [
+                        "Inter"
+                ]
+        },
+        "fontSize": {
+                "headline-lg": [
+                        "40px",
+                        {
+                                "lineHeight": "48px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-md": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "30px",
+                        {
+                                "lineHeight": "36px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "label-sm": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "label-md": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "500"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex overflow-hidden">
+<!-- Mock Background (Dimmed Project Pipeline) -->
+<div class="fixed inset-0 bg-surface-container flex flex-col p-lg pointer-events-none opacity-50 z-0">
+<div class="h-16 flex items-center justify-between mb-lg border-b border-outline-variant">
+<div class="font-headline-lg text-headline-lg font-bold">Project Pipeline</div>
+</div>
+<div class="flex-1 grid grid-cols-4 gap-gutter">
+<div class="bg-surface rounded-xl border border-outline-variant p-md">
+<div class="font-label-md text-label-md text-on-surface-variant mb-md uppercase">To Do</div>
+<div class="h-24 bg-surface-container-high rounded-lg mb-sm border border-outline-variant"></div>
+<div class="h-24 bg-surface-container-high rounded-lg mb-sm border border-outline-variant"></div>
+</div>
+<div class="bg-surface rounded-xl border border-outline-variant p-md">
+<div class="font-label-md text-label-md text-on-surface-variant mb-md uppercase">In Progress</div>
+<div class="h-24 bg-surface-container-high rounded-lg mb-sm border border-primary ring-1 ring-primary"></div>
+</div>
+</div>
+</div>
+<!-- Overlay Dimmer -->
+<div class="fixed inset-0 bg-background/50 z-40 transition-opacity backdrop-blur-[2px]"></div>
+<!-- Drawer -->
+<div class="fixed inset-y-0 right-0 w-[900px] max-w-full bg-surface-container-lowest border-l border-outline-variant z-50 shadow-2xl flex flex-col transform transition-transform duration-300 translate-x-0">
+<!-- Drawer Header -->
+<header class="h-16 flex items-center justify-between px-lg border-b border-outline-variant shrink-0 bg-surface">
+<div class="flex items-center gap-md">
+<div class="font-code-sm text-code-sm bg-surface-container-high px-sm py-xs rounded border border-outline-variant text-on-surface">PROJ-101</div>
+<h2 class="font-headline-md text-headline-md text-primary font-bold">Implement Authentication Module</h2>
+</div>
+<div class="flex items-center gap-md">
+<button aria-label="Watch task" class="flex items-center gap-xs px-sm py-xs rounded-lg border border-outline-variant text-on-surface-variant hover:border-outline hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+<span class="font-label-md text-label-md">Watch</span>
+</button>
+<div class="relative">
+<button aria-label="Watch task" class="flex items-center gap-xs px-sm py-xs rounded-lg bg-surface-container-high border border-outline-variant text-on-surface hover:bg-surface-bright transition-colors">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="font-label-md text-label-md">In Progress</span>
+<span class="material-symbols-outlined text-[18px]">expand_more</span>
+</button>
+</div>
+<button aria-label="Close Task Detail" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-container-high text-on-surface-variant transition-colors ml-sm">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+</header>
+<!-- Drawer Content Split -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Left Pane (Main Details - ~70%) -->
+<div class="flex-[7] flex flex-col overflow-y-auto border-r border-outline-variant bg-surface">
+<div class="p-lg space-y-xl">
+<!-- Description -->
+<section>
+<h2 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-sm">Description</h2>
+<div class="font-body-md text-body-md text-on-surface space-y-md bg-surface-container-low p-md rounded-xl border border-outline-variant">
+<p>We need to implement the core OAuth2 authentication flow for the new customer portal. This includes integrating with Auth0 and ensuring role-based access control (RBAC) is correctly mapped to our internal user model.</p>
+<ul class="list-disc list-inside space-y-xs text-on-surface-variant">
+<li>Setup Auth0 tenant and define scopes.</li>
+<li>Create frontend login/callback routes.</li>
+<li>Validate JWTs on the backend API gateway.</li>
+</ul>
+</div>
+</section>
+<!-- Subtasks -->
+<section>
+<div class="flex items-center justify-between mb-sm">
+<h2 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Subtasks</h2>
+<span class="font-code-sm text-code-sm text-on-surface">1/3</span>
+</div>
+<div class="space-y-sm">
+<div aria-checked="true" class="flex items-center gap-md p-md bg-surface-container-lowest rounded-xl border border-outline-variant hover:border-outline transition-colors group" role="checkbox" tabindex="0">
+<span class="material-symbols-outlined text-primary filled">check_circle</span>
+<span class="font-body-md text-body-md text-on-surface line-through opacity-70">Configure Auth0 Tenant</span>
+</div>
+<div aria-checked="false" class="flex items-center gap-md p-md bg-surface-container-low rounded-xl border border-primary hover:border-primary-fixed-dim transition-colors group cursor-pointer" role="checkbox" tabindex="0">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">radio_button_unchecked</span>
+<span class="font-body-md text-body-md text-on-surface">Implement Frontend Login Flow</span>
+</div>
+<div aria-checked="false" class="flex items-center gap-md p-md bg-surface-container-lowest rounded-xl border border-outline-variant hover:border-outline transition-colors group cursor-pointer" role="checkbox" tabindex="0">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">radio_button_unchecked</span>
+<span class="font-body-md text-body-md text-on-surface">Backend JWT Validation Middleware</span>
+</div>
+</div>
+<button class="mt-sm flex items-center gap-xs text-primary hover:text-primary-fixed-dim font-label-md text-label-md transition-colors">
+<span class="material-symbols-outlined text-[16px]">add</span> Add Subtask
+                        </button>
+</section>
+<!-- Attachments -->
+<section>
+<h2 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-sm">Attachments</h2>
+<div class="grid grid-cols-2 gap-md">
+<div class="flex items-center gap-md p-sm bg-surface-container-lowest border border-outline-variant rounded-lg hover:bg-surface-container-high transition-colors cursor-pointer group">
+<div class="w-10 h-10 bg-error-container/20 rounded flex items-center justify-center text-error">
+<span class="material-symbols-outlined">picture_as_pdf</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="font-label-md text-label-md text-on-surface truncate">Auth_Architecture_v2.pdf</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant">2.4 MB</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">download</span>
+</div>
+</div>
+</section>
+</div>
+</div>
+<!-- Right Pane (Sidebar/Metadata - ~30%) -->
+<div class="flex-[3] flex flex-col bg-surface-container-lowest">
+<div class="flex-1 overflow-y-auto p-lg space-y-xl">
+<!-- Smart Summary -->
+<div class="p-md bg-gradient-to-br from-surface-container to-surface-container-low border border-primary/20 rounded-xl relative overflow-hidden">
+<div class="absolute top-0 right-0 p-sm opacity-20">
+<span aria-hidden="true" class="material-symbols-outlined text-[48px] text-primary">auto_awesome</span>
+</div>
+<h3 class="font-label-md text-label-md text-primary flex items-center gap-xs mb-sm">
+<span aria-hidden="true" class="material-symbols-outlined text-[16px]">auto_awesome</span> AI Summary
+                        </h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm relative z-10">
+                            This task involves setting up OAuth2 with Auth0. Frontend work is currently in progress. Blocking dependency on Backend JWT validation. Estimated completion: 2 days.
+                        </p>
+</div>
+<!-- Metadata Grid -->
+<div class="space-y-lg">
+<div>
+<h3 class="font-label-md text-label-md uppercase mb-xs text-on-surface">Assignee</h3>
+<div class="flex items-center gap-sm">
+<img alt="Alex Chen profile" class="w-8 h-8 rounded-full border border-outline-variant" data-alt="A professional headshot of a software engineer for a project management dashboard. Corporate, clean lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCT7BMnZ0K97NVMjZ2ptHY9IbNLj71M32tBJ7kVB3VFYnaO3I9u79Ab4mIprlriKQN2EsR5EuSsyBa4GQIvBupg0CHjMgJVPazsCkBujPpEavvcfwEFu3T_o-p7JcXyKaeq1B11JhpuUmsVuVSO3K6ZiJu1NKsqAgVZS1BdD_k0O36O-RLGLzVpFY_vcu_uJh_d0QzT-bOHnLLW-IqKEBPIeu-4wrwNnrGpaLX-_YNizxVmCqxz-XfQgw50ImReLlP8uoOWFaG1nHTD"/>
+<span class="font-body-md text-body-md text-on-surface">Alex Chen</span>
+</div>
+</div>
+<div>
+<h3 class="font-label-md text-label-md uppercase mb-xs text-on-surface">Story Points</h3>
+<div class="inline-flex items-center justify-center w-8 h-8 rounded bg-surface-container-high border border-outline-variant font-code-sm text-code-sm font-bold text-on-surface">
+                                5
+                            </div>
+</div>
+<div>
+<h3 class="font-label-md text-label-md uppercase mb-xs text-on-surface">Tags</h3>
+<div class="flex flex-wrap gap-xs">
+<span class="px-sm py-xs rounded-full bg-primary/10 border border-primary/20 text-primary font-label-md text-label-md">Backend</span>
+<span class="px-sm py-xs rounded-full bg-tertiary/10 border border-tertiary/20 text-tertiary font-label-md text-label-md">Security</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Comment Input Fixed at Bottom -->
+<div class="p-md border-t border-outline-variant bg-surface-container-lowest shrink-0">
+<div class="relative">
+<textarea aria-label="Write a comment" class="w-full bg-surface border border-outline-variant rounded-lg pl-md pr-[80px] py-sm font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant focus:border-primary focus:ring-1 focus:ring-primary resize-none transition-all" placeholder="Write a comment..." rows="1"></textarea>
+<div class="absolute right-sm top-1/2 -translate-y-1/2 flex items-center gap-xs">
+<button class="w-8 h-8 flex items-center justify-center rounded text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[18px]">attach_file</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-primary-container text-on-primary-container hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">send</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>
