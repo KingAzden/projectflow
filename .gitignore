@@ -16,3 +16,4 @@ build/
 .next/
 out/
 .vercel/
+.vercel
