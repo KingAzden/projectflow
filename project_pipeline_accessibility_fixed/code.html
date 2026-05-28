@@ -592,6 +592,7 @@
         const badge = card.querySelector('span.inline-block');
         const txt = (badge?.textContent || '').trim();
         if (PRIORITY_BADGE[txt]) card.dataset.priority = txt;
+        card.querySelectorAll('img').forEach(img => img.setAttribute('draggable', 'false'));
     });
 
     function refreshColumn(col) {
@@ -649,8 +650,12 @@
         }, { offset: -Infinity, el: null }).el;
     }
     function attachCardHandlers(card) {
-        card.addEventListener('dragstart', () => {
+        card.addEventListener('dragstart', (e) => {
             dragged = card;
+            if (e.dataTransfer) {
+                e.dataTransfer.effectAllowed = 'move';
+                try { e.dataTransfer.setData('text/plain', card.dataset.cardId || ''); } catch {}
+            }
             requestAnimationFrame(() => card.classList.add('dragging'));
         });
         card.addEventListener('dragend', () => {
