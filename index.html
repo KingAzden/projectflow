@@ -723,7 +723,7 @@
         const saved = localStorage.getItem(STORAGE_KEY);
         if (!saved) return;
         let order;
-        try { order = JSON.parse(saved); } catch { return; }
+        try { order = JSON.parse(saved); } catch (err) { return; }
         if (!Array.isArray(order)) return;
         order.forEach(function (id) {
           const card = grid.querySelector('[data-id="' + id + '"]');
@@ -741,50 +741,67 @@
 
       // --- Drag state ---
       let dragged = null;
+      let dragOverCard = null;
 
-      function onDragStart(e) {
-        dragged = this;
-        // Use a short delay so the browser snapshot is taken before the class is applied
-        requestAnimationFrame(function () {
-          dragged.classList.add('dragging');
-        });
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/plain', this.dataset.id);
+      function clearDragOver() {
+        if (dragOverCard) {
+          dragOverCard.classList.remove('drag-over');
+          dragOverCard = null;
+        }
       }
 
-      function onDragEnd() {
-        if (dragged) dragged.classList.remove('dragging');
-        grid.querySelectorAll('.screen-card').forEach(function (c) {
-          c.classList.remove('drag-over');
+      // Attach dragstart/dragend directly on each card (required for draggable elements)
+      grid.querySelectorAll('.screen-card').forEach(function (card) {
+        card.addEventListener('dragstart', function (e) {
+          dragged = card;
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/plain', card.dataset.id);
+          // Delay so browser captures ghost image before opacity change
+          requestAnimationFrame(function () {
+            if (dragged) dragged.classList.add('dragging');
+          });
         });
-        dragged = null;
-        saveOrder();
-      }
 
-      function onDragOver(e) {
+        card.addEventListener('dragend', function () {
+          if (dragged) dragged.classList.remove('dragging');
+          clearDragOver();
+          dragged = null;
+          saveOrder();
+        });
+      });
+
+      // Delegate dragover, dragleave, drop to the GRID so the whole surface is a valid drop zone.
+      // This prevents the drag from being cancelled when moving over gaps or child elements.
+      grid.addEventListener('dragover', function (e) {
         e.preventDefault();
         e.dataTransfer.dropEffect = 'move';
-        const target = e.target.closest('.screen-card');
-        if (!target || target === dragged) return;
-        // Clear previous highlights
-        grid.querySelectorAll('.screen-card').forEach(function (c) {
-          c.classList.remove('drag-over');
-        });
-        target.classList.add('drag-over');
-      }
 
-      function onDragLeave(e) {
         const target = e.target.closest('.screen-card');
-        if (target) target.classList.remove('drag-over');
-      }
+        if (!target || target === dragged) {
+          clearDragOver();
+          return;
+        }
+        if (target !== dragOverCard) {
+          clearDragOver();
+          dragOverCard = target;
+          target.classList.add('drag-over');
+        }
+      });
 
-      function onDrop(e) {
+      grid.addEventListener('dragleave', function (e) {
+        // Only clear when the pointer actually leaves the grid entirely
+        if (!grid.contains(e.relatedTarget)) {
+          clearDragOver();
+        }
+      });
+
+      grid.addEventListener('drop', function (e) {
         e.preventDefault();
         const target = e.target.closest('.screen-card');
+        clearDragOver();
         if (!target || target === dragged || !dragged) return;
-        target.classList.remove('drag-over');
 
-        // Determine insertion position: drop before or after target based on cursor Y
+        // Insert before or after target based on vertical midpoint
         const rect = target.getBoundingClientRect();
         const midY = rect.top + rect.height / 2;
         if (e.clientY < midY) {
@@ -792,26 +809,10 @@
         } else {
           grid.insertBefore(dragged, target.nextSibling);
         }
-      }
-
-      // --- Attach listeners ---
-      function attachListeners() {
-        grid.querySelectorAll('.screen-card').forEach(function (card) {
-          card.addEventListener('dragstart', onDragStart);
-          card.addEventListener('dragend', onDragEnd);
-          card.addEventListener('dragover', onDragOver);
-          card.addEventListener('dragleave', onDragLeave);
-          card.addEventListener('drop', onDrop);
-
-          // Prevent link clicks from triggering drag accidentally
-          card.querySelectorAll('a').forEach(function (a) {
-            a.addEventListener('mousedown', function (e) { e.stopPropagation(); });
-          });
-        });
-      }
+        saveOrder();
+      });
 
       restoreOrder();
-      attachListeners();
     })();
   </script>
 </body>
