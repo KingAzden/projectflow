@@ -111,6 +111,29 @@
         background: #19202d;
         color: #dce2f5;
       }
+      .btn-ghost {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: 1px solid rgba(45, 55, 72, 0.55);
+        border-radius: 6px;
+        padding: 6px 14px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #6ee7b7;
+        cursor: pointer;
+        font-family: inherit;
+        transition:
+          background 140ms,
+          border-color 140ms,
+          color 140ms;
+      }
+      .btn-ghost:hover {
+        background: #19202d;
+        border-color: rgba(110, 231, 183, 0.4);
+        color: #a7f3d0;
+      }
       .profile-chip {
         display: flex;
         align-items: center;
@@ -1794,6 +1817,15 @@
             </div>
           </div>
         </div>
+        <button
+          id="topbar-login-btn"
+          class="btn-ghost"
+          type="button"
+          onclick="showLogin()"
+          style="display: none"
+        >
+          Log In
+        </button>
         <div class="rel">
           <div class="profile-chip" onclick="toggle('dd-profile')">
             <div class="avatar" id="topbar-avatar">AJ</div>
@@ -1833,7 +1865,7 @@
               id="btn-login"
               class="dropdown-item"
               onclick="showLogin()"
-              style="display: none; color: #6ee7b7"
+              style="color: #6ee7b7"
             >
               &#8594; Log In
             </div>
@@ -4054,20 +4086,29 @@
       let isLoggedIn = false;
       
       function updateAuthUI() {
+        const topbarLogin = document.getElementById("topbar-login-btn");
+        const sidebarLogout = document.querySelector(
+          '.sidebar .nav-btn[title="Log out"]',
+        );
         if (isLoggedIn) {
+          if (topbarLogin) topbarLogin.style.display = "none";
           document.getElementById("btn-logout").style.display = "flex";
           document.getElementById("btn-login").style.display = "none";
           document.getElementById("dd-view-profile").style.display = "flex";
           document.getElementById("dd-account-settings").style.display = "flex";
           document.getElementById("dd-profile-sep").style.display = "block";
-          document.getElementById("topbar-name").textContent = document.getElementById("pf-first").value.trim() || "You";
+          document.getElementById("topbar-name").textContent =
+            document.getElementById("pf-first").value.trim() || "You";
+          if (sidebarLogout) sidebarLogout.style.display = "flex";
         } else {
+          if (topbarLogin) topbarLogin.style.display = "inline-flex";
           document.getElementById("btn-logout").style.display = "none";
           document.getElementById("btn-login").style.display = "flex";
           document.getElementById("dd-view-profile").style.display = "none";
           document.getElementById("dd-account-settings").style.display = "none";
           document.getElementById("dd-profile-sep").style.display = "none";
           document.getElementById("topbar-name").textContent = "Guest";
+          if (sidebarLogout) sidebarLogout.style.display = "none";
         }
       }
 
@@ -4460,9 +4501,6 @@
         
         isLoggedIn = false;
         updateAuthUI();
-        
-        // Show login modal
-        showLogin();
       });
     </script>
   </body>
