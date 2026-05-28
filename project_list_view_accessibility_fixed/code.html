@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Power-User List View - ProjectFlow</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#0c1320",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "on-surface": "#dce2f5",
+                        "error": "#ffb4ab",
+                        "on-tertiary-container": "#5b020f",
+                        "primary": "#ffb3ae",
+                        "outline": "#ab8986",
+                        "on-secondary": "#263143",
+                        "error-container": "#93000a",
+                        "on-secondary-fixed": "#111c2d",
+                        "on-error": "#690005",
+                        "tertiary": "#ffb3b1",
+                        "surface-bright": "#323948",
+                        "on-tertiary": "#640a15",
+                        "surface-container-high": "#232a38",
+                        "tertiary-fixed-dim": "#ffb3b1",
+                        "on-error-container": "#ffdad6",
+                        "inverse-surface": "#dce2f5",
+                        "on-background": "#dce2f5",
+                        "on-tertiary-fixed": "#410007",
+                        "surface-variant": "#2e3543",
+                        "secondary": "#bcc7de",
+                        "on-secondary-container": "#aeb9d0",
+                        "on-primary-fixed": "#410004",
+                        "surface-tint": "#ffb3ae",
+                        "surface-container-lowest": "#070e1b",
+                        "inverse-on-surface": "#2a303f",
+                        "secondary-container": "#3e495d",
+                        "tertiary-container": "#e46b6c",
+                        "surface-dim": "#0c1320",
+                        "on-surface-variant": "#e4beba",
+                        "primary-fixed-dim": "#ffb3ae",
+                        "surface-container-highest": "#2e3543",
+                        "on-primary-fixed-variant": "#930014",
+                        "surface-container-low": "#151c29",
+                        "on-primary": "#68000b",
+                        "outline-variant": "#5b403e",
+                        "surface": "#0c1320",
+                        "secondary-fixed": "#d8e3fb",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "inverse-primary": "#ba1724",
+                        "primary-container": "#ff5352",
+                        "tertiary-fixed": "#ffdad8",
+                        "surface-container": "#19202d",
+                        "on-primary-container": "#5c0008",
+                        "primary-fixed": "#ffdad7",
+                        "on-tertiary-fixed-variant": "#842328"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "sm": "8px",
+                        "base": "4px",
+                        "margin": "24px",
+                        "md": "16px",
+                        "drawer_width": "400px",
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "xl": "48px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "code-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "code-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #2e3543;
+            border-radius: 4px;
+        }
+        .table-row-hover:hover .inline-edit-icon {
+            opacity: 1;
+        }
+        /* Visual adjustment for semantic table elements to match grid appearance */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;
+        }
+        th, td {
+            text-align: left;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        .col-select { width: 60px; }
+        .col-name { width: 300px; }
+        .col-project { width: 150px; }
+        .col-assignee { width: 150px; }
+        .col-status { width: 120px; }
+        .col-deadline { width: 120px; }
+        .col-priority { width: 110px; }
+        .col-value { width: 100px; text-align: right; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-hidden antialiased">
+<!-- TopNavBar -->
+<nav class="bg-surface border-b border-outline-variant flex justify-between items-center w-full h-16 px-md ml-16 fixed top-0 z-30">
+<div class="flex items-center gap-sm">
+<span class="font-headline-md text-headline-md font-black text-primary">ProjectFlow</span>
+</div>
+<div class="flex items-center gap-lg">
+<div class="relative hidden md:block">
+<label class="sr-only" for="global-search">Search tasks</label>
+<span aria-hidden="true" class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-on-surface text-[20px]">search</span>
+<input class="bg-surface-container h-8 pl-8 pr-3 rounded border border-outline-variant focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none font-body-md text-body-md text-on-surface w-64 placeholder-on-surface transition-colors" id="global-search" placeholder="Search tasks..." type="text"/>
+</div>
+<div class="flex items-center gap-sm">
+<button aria-label="Notifications" class="w-8 h-8 flex items-center justify-center rounded hover:text-primary transition-colors text-on-surface">
+<span aria-hidden="true" class="material-symbols-outlined">notifications</span>
+</button>
+<button aria-label="AI Assistant" class="w-8 h-8 flex items-center justify-center rounded hover:text-primary transition-colors text-on-surface">
+<span aria-hidden="true" class="material-symbols-outlined">smart_toy</span>
+</button>
+<div aria-hidden="true" class="h-6 w-px bg-outline-variant mx-xs"></div>
+<button aria-label="User profile" class="flex items-center gap-2 hover:text-primary transition-colors">
+<span class="text-on-surface font-label-md text-label-md">Profile</span>
+<img alt="Jane Doe professional headshot" class="w-8 h-8 rounded-full border border-outline-variant object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpHd-4QzoTvxGWGMQsB-1CPOxTMLS059cdMPSXeFlSoQFeG89zkES5FUHNSkI7cWCgkTi4OO_iAJ4doYulTmIXjXvykQV2XeMp9Zbq_isFSC8ogY8qQkaqDz84cB3l2a4ow9Gp4loFfUbODkckGocdJoRHpDVlhBjR2pcI-rLap8xBlm0ohzh9yGRr_VJDox-5Q1qgv2JzAs5ytK8FNcGsOjTs2tSbOUaqX-yIdgoBljjhKBbxOwbd-1Yg8_U0YRBI3dnvNExbZ1iH"/>
+</button>
+</div>
+</div>
+</nav>
+<!-- SideNavBar -->
+<aside class="bg-surface-container-lowest h-screen w-16 hover:w-drawer_width transition-all duration-300 border-r border-outline-variant fixed left-0 top-0 z-40 group overflow-hidden flex flex-col">
+<div class="h-16 flex items-center px-4 shrink-0 border-b border-outline-variant/50">
+<div class="w-8 h-8 rounded bg-primary-container flex items-center justify-center shrink-0">
+<span aria-hidden="true" class="material-symbols-outlined text-on-primary font-bold">flowsheet</span>
+</div>
+<div class="ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap overflow-hidden">
+<div class="font-headline-md text-headline-md font-bold text-primary leading-tight">ProjectFlow</div>
+<div class="font-label-md text-label-md text-on-surface">Management Hub</div>
+</div>
+</div>
+<nav aria-label="Main Navigation" class="flex-1 py-4 flex flex-col gap-2 px-2">
+<button aria-label="Dashboard" class="flex items-center h-10 px-2 rounded-lg hover:bg-surface-container-high transition-all duration-200 ease-in-out text-on-surface">
+<span aria-hidden="true" class="material-symbols-outlined w-6 flex justify-center shrink-0">dashboard</span>
+<span class="ml-4 font-label-md text-label-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200">Dashboard</span>
+</button>
+<button aria-label="Pipeline" class="flex items-center h-10 px-2 rounded-lg hover:bg-surface-container-high transition-all duration-200 ease-in-out text-on-surface">
+<span aria-hidden="true" class="material-symbols-outlined w-6 flex justify-center shrink-0">view_kanban</span>
+<span class="ml-4 font-label-md text-label-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200">Pipeline</span>
+</button>
+<button aria-current="page" aria-label="Task List View" class="flex items-center h-10 px-2 rounded-lg hover:bg-surface-container-high transition-all duration-200 ease-in-out text-primary border-l-2 border-primary bg-surface-container-high">
+<span aria-hidden="true" class="material-symbols-outlined w-6 flex justify-center shrink-0" style="font-variation-settings: 'FILL' 1;">list_alt</span>
+<span class="ml-4 font-label-md text-label-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 font-bold">List</span>
+</button>
+<button aria-label="Timeline" class="flex items-center h-10 px-2 rounded-lg hover:bg-surface-container-high transition-all duration-200 ease-in-out text-on-surface">
+<span aria-hidden="true" class="material-symbols-outlined w-6 flex justify-center shrink-0">timeline</span>
+<span class="ml-4 font-label-md text-label-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200">Timeline</span>
+</button>
+</nav>
+<div class="p-2 border-t border-outline-variant/50">
+<button aria-label="Add New Project Section" class="w-full flex items-center h-10 px-2 rounded-lg bg-primary-container text-white hover:bg-inverse-primary transition-colors overflow-hidden">
+<span aria-hidden="true" class="material-symbols-outlined w-6 flex justify-center shrink-0">add</span>
+<span class="ml-4 font-label-md text-label-md font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200">Add Section</span>
+</button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-16 mt-16 p-lg h-[calc(100vh-64px)] overflow-hidden flex flex-col bg-background">
+<!-- Header & Filters -->
+<div class="mb-md shrink-0 flex flex-col gap-sm">
+<div class="flex justify-between items-end">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface m-0">Master List</h1>
+<p class="font-body-md text-body-md text-on-surface mt-1">High-density view of all active deliverables.</p>
+</div>
+<div class="flex gap-2">
+<button aria-label="Export list as CSV" class="h-8 px-3 rounded border border-outline-variant text-on-surface bg-surface-container hover:bg-surface-container-high flex items-center gap-1 font-label-md text-label-md transition-colors">
+<span aria-hidden="true" class="material-symbols-outlined text-[16px]">file_download</span>
+                    Export
+                </button>
+<button aria-label="Create new task" class="h-8 px-3 rounded bg-primary-container text-white hover:bg-inverse-primary flex items-center gap-1 font-label-md text-label-md transition-colors">
+<span aria-hidden="true" class="material-symbols-outlined text-[16px]">add</span>
+                    New Task
+                </button>
+</div>
+</div>
+<!-- Filter Bar -->
+<div class="bg-[#161F2F] border border-[#2A3547] rounded-lg p-sm flex flex-wrap items-center gap-2">
+<div class="flex items-center gap-2 border-r border-outline-variant pr-2">
+<span aria-hidden="true" class="material-symbols-outlined text-on-surface text-[18px]">filter_list</span>
+<span class="font-label-md text-label-md text-on-surface uppercase tracking-wider">Filters</span>
+</div>
+<div class="relative">
+<button aria-haspopup="listbox" aria-label="Filter by Owner" class="h-7 px-2 rounded border border-outline-variant text-on-surface bg-surface hover:border-primary flex items-center gap-1 font-label-md text-label-md transition-colors">
+                    Owner
+                    <span aria-hidden="true" class="material-symbols-outlined text-[14px]">arrow_drop_down</span>
+</button>
+</div>
+<div class="relative">
+<button aria-haspopup="listbox" aria-label="Filter by Tags" class="h-7 px-2 rounded border border-outline-variant text-on-surface bg-surface hover:border-primary flex items-center gap-1 font-label-md text-label-md transition-colors">
+                    Tags
+                    <span aria-hidden="true" class="material-symbols-outlined text-[14px]">arrow_drop_down</span>
+</button>
+</div>
+<div class="relative">
+<button aria-haspopup="dialog" aria-label="Filter by Date Range" class="h-7 px-2 rounded border border-outline-variant text-on-surface bg-surface hover:border-primary flex items-center gap-1 font-label-md text-label-md transition-colors">
+                    Date Range
+                    <span aria-hidden="true" class="material-symbols-outlined text-[14px]">arrow_drop_down</span>
+</button>
+</div>
+<div class="ml-auto flex items-center gap-2">
+<span class="font-label-md text-label-md text-on-surface">142 items</span>
+<button aria-label="Customize table columns" class="w-7 h-7 rounded border border-outline-variant flex items-center justify-center hover:bg-surface-container hover:text-primary transition-colors text-on-surface">
+<span aria-hidden="true" class="material-symbols-outlined text-[16px]">view_column</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Data Table Container -->
+<div class="flex-1 bg-[#161F2F] border border-[#2A3547] rounded-lg overflow-hidden flex flex-col shadow-sm">
+<div class="flex-1 overflow-auto custom-scrollbar">
+<table aria-label="Tasks Master List" class="w-full text-left border-collapse">
+<thead class="sticky top-0 z-10 bg-[#1C2638] border-b border-[#2A3547]">
+<tr class="h-10 text-on-surface uppercase tracking-wider font-label-md text-label-md">
+<th class="col-select" scope="col">
+<div class="flex items-center justify-center">
+<input aria-label="Select all tasks" class="rounded-[2px] border-outline-variant bg-surface text-primary-container focus:ring-primary-container w-4 h-4 cursor-pointer" type="checkbox"/>
+</div>
+</th>
+<th class="col-name font-bold cursor-pointer hover:text-primary transition-colors" scope="col">
+<div class="flex items-center gap-1">Task Name <span aria-hidden="true" class="material-symbols-outlined text-[14px]">arrow_downward</span></div>
+</th>
+<th class="col-project font-bold cursor-pointer hover:text-primary transition-colors" scope="col">Project</th>
+<th class="col-assignee font-bold cursor-pointer hover:text-primary transition-colors" scope="col">Assignee</th>
+<th class="col-status font-bold cursor-pointer hover:text-primary transition-colors" scope="col">Status</th>
+<th class="col-deadline font-bold cursor-pointer hover:text-primary transition-colors" scope="col">Deadline</th>
+<th class="col-priority font-bold cursor-pointer hover:text-primary transition-colors" scope="col">Priority</th>
+<th class="col-value font-bold text-right cursor-pointer hover:text-primary transition-colors" scope="col">Value</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#2A3547]">
+<!-- Row 1 -->
+<tr class="group table-row-hover h-12 hover:bg-[#1C2638] transition-colors">
+<td class="col-select">
+<div class="flex items-center justify-center">
+<input aria-label="Select Finalize Q3 Marketing Architecture" class="rounded-[2px] border-outline-variant bg-surface text-primary-container focus:ring-primary-container w-4 h-4 cursor-pointer" id="task-1-checkbox" type="checkbox"/>
+</div>
+</td>
+<td class="col-name">
+<div class="flex items-center gap-2 overflow-hidden relative pr-6">
+<div aria-hidden="true" class="w-2 h-2 rounded-full bg-secondary shrink-0"></div>
+<span class="font-body-md text-on-surface truncate">Finalize Q3 Marketing Architecture</span>
+<button aria-label="Edit task name" class="inline-edit-icon absolute right-0 opacity-0 transition-opacity text-on-surface hover:text-primary">
+<span aria-hidden="true" class="material-symbols-outlined text-[16px]">edit</span>
+</button>
+</div>
+</td>
+<td class="col-project"><span class="font-body-md text-on-surface truncate">Project Nova</span></td>
+<td class="col-assignee">
+<div class="flex items-center gap-2 truncate">
+<div aria-hidden="true" class="w-6 h-6 rounded-full bg-surface-bright flex items-center justify-center text-[10px] font-bold text-on-surface shrink-0">JD</div>
+<span class="font-body-md text-on-surface truncate">Jane Doe</span>
+</div>
+</td>
+<td class="col-status">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#27a644]/20 text-on-surface border border-[#27a644]/40 uppercase tracking-wide">In Progress</span>
+</td>
+<td class="col-deadline font-code-sm text-on-surface">Oct 24, 2023</td>
+<td class="col-priority">
+<span class="inline-flex items-center px-2 py-0.5 rounded-[4px] text-[10px] font-bold bg-error-container/40 text-on-surface border border-error/50">P1 - High</span>
+</td>
+<td class="col-value font-code-sm text-on-surface text-right">$45,000</td>
+</tr>
+<!-- Row 2 -->
+<tr class="group table-row-hover h-12 hover:bg-[#1C2638] transition-colors">
+<td class="col-select">
+<div class="flex items-center justify-center">
+<input aria-label="Select Database Migration Planning" class="rounded-[2px] border-outline-variant bg-surface text-primary-container focus:ring-primary-container w-4 h-4 cursor-pointer" id="task-2-checkbox" type="checkbox"/>
+</div>
+</td>
+<td class="col-name">
+<div class="flex items-center gap-2 overflow-hidden relative pr-6">
+<div aria-hidden="true" class="w-2 h-2 rounded-full bg-tertiary shrink-0"></div>
+<span class="font-body-md text-on-surface truncate">Database Migration Planning</span>
+<button aria-label="Edit task name" class="inline-edit-icon absolute right-0 opacity-0 transition-opacity text-on-surface hover:text-primary">
+<span aria-hidden="true" class="material-symbols-outlined text-[16px]">edit</span>
+</button>
+</div>
+</td>
+<td class="col-project"><span class="font-body-md text-on-surface truncate">Infra Upgrade</span></td>
+<td class="col-assignee">
+<div class="flex items-center gap-2 truncate">
+<div aria-hidden="true" class="w-6 h-6 rounded-full bg-surface-bright flex items-center justify-center text-[10px] font-bold text-on-surface shrink-0">AS</div>
+<span class="font-body-md text-on-surface truncate">Alex Smith</span>
+</div>
+</td>
+<td class="col-status">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-tertiary/20 text-on-surface border border-tertiary/40 uppercase tracking-wide">Review</span>
+</td>
+<td class="col-deadline font-code-sm text-on-surface">Oct 26, 2023</td>
+<td class="col-priority">
+<span class="inline-flex items-center px-2 py-0.5 rounded-[4px] text-[10px] font-bold bg-surface-bright text-on-surface border border-outline">P2 - Med</span>
+</td>
+<td class="col-value font-code-sm text-on-surface text-right">$12,500</td>
+</tr>
+<!-- Row 3 -->
+<tr class="group table-row-hover h-12 bg-[#1C2638]/50 hover:bg-[#1C2638] transition-colors">
+<td class="col-select">
+<div class="flex items-center justify-center">
+<input aria-label="Select Client Onboarding Sync" checked="" class="rounded-[2px] border-outline-variant bg-primary-container text-primary-container focus:ring-primary-container w-4 h-4 cursor-pointer" id="task-3-checkbox" type="checkbox"/>
+</div>
+</td>
+<td class="col-name">
+<div class="flex items-center gap-2 overflow-hidden relative pr-6">
+<div aria-hidden="true" class="w-2 h-2 rounded-full bg-outline shrink-0"></div>
+<span class="font-body-md text-on-surface truncate line-through opacity-60">Client Onboarding Sync</span>
+<button aria-label="Edit task name" class="inline-edit-icon absolute right-0 opacity-0 transition-opacity text-on-surface hover:text-primary">
+<span aria-hidden="true" class="material-symbols-outlined text-[16px]">edit</span>
+</button>
+</div>
+</td>
+<td class="col-project"><span class="font-body-md text-on-surface truncate opacity-60">Acme Corp</span></td>
+<td class="col-assignee">
+<div class="flex items-center gap-2 truncate opacity-60">
+<div aria-hidden="true" class="w-6 h-6 rounded-full bg-surface-bright flex items-center justify-center text-[10px] font-bold text-on-surface shrink-0">JD</div>
+<span class="font-body-md text-on-surface truncate">Jane Doe</span>
+</div>
+</td>
+<td class="col-status">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-surface-bright text-on-surface border border-outline uppercase tracking-wide opacity-60">Done</span>
+</td>
+<td class="col-deadline font-code-sm text-on-surface opacity-60">Oct 20, 2023</td>
+<td class="col-priority">
+<span class="inline-flex items-center px-2 py-0.5 rounded-[4px] text-[10px] font-bold bg-surface-bright text-on-surface border border-outline opacity-60">P3 - Low</span>
+</td>
+<td class="col-value font-code-sm text-on-surface text-right opacity-60">--</td>
+</tr>
+<!-- Row 4 -->
+<tr class="group table-row-hover h-12 hover:bg-[#1C2638] transition-colors">
+<td class="col-select">
+<div class="flex items-center justify-center">
+<input aria-label="Select Security Audit Response" class="rounded-[2px] border-outline-variant bg-surface text-primary-container focus:ring-primary-container w-4 h-4 cursor-pointer" id="task-4-checkbox" type="checkbox"/>
+</div>
+</td>
+<td class="col-name">
+<div class="flex items-center gap-2 overflow-hidden relative pr-6">
+<div aria-hidden="true" class="w-2 h-2 rounded-full bg-error shrink-0"></div>
+<span class="font-body-md text-on-surface truncate">Security Audit Response</span>
+<button aria-label="Edit task name" class="inline-edit-icon absolute right-0 opacity-0 transition-opacity text-on-surface hover:text-primary">
+<span aria-hidden="true" class="material-symbols-outlined text-[16px]">edit</span>
+</button>
+</div>
+</td>
+<td class="col-project"><span class="font-body-md text-on-surface truncate">Internal Ops</span></td>
+<td class="col-assignee">
+<div class="flex items-center gap-2 truncate">
+<div aria-hidden="true" class="w-6 h-6 rounded-full bg-surface-bright flex items-center justify-center text-[10px] font-bold text-on-surface shrink-0">MR</div>
+<span class="font-body-md text-on-surface truncate">Mike Ross</span>
+</div>
+</td>
+<td class="col-status">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-error/20 text-on-surface border border-error/40 uppercase tracking-wide">Blocked</span>
+</td>
+<td class="col-deadline font-code-sm text-error font-bold">Oct 23, 2023</td>
+<td class="col-priority">
+<span class="inline-flex items-center px-2 py-0.5 rounded-[4px] text-[10px] font-bold bg-error-container/40 text-on-surface border border-error/50">P1 - High</span>
+</td>
+<td class="col-value font-code-sm text-on-surface text-right">$0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</main>
+<!-- ProjectFlow Hub Navigation -->
+<a href="../" style="position:fixed;top:12px;right:12px;z-index:9999;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:rgba(12,19,32,0.92);border:1px solid rgba(255,179,174,0.3);color:#ffb3ae;font-family:Inter,system-ui,sans-serif;font-size:12px;font-weight:700;text-decoration:none;backdrop-filter:blur(8px);transition:border-color .2s,background .2s;">&larr; Hub</a>
+</body></html>

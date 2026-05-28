@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Project Settings - ProjectFlow</title>
+<!-- Material Symbols -->
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Theme Config -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-bright": "#323948",
+                    "on-secondary-container": "#aeb9d0",
+                    "on-tertiary-fixed-variant": "#842328",
+                    "outline-variant": "#5b403e",
+                    "surface-tint": "#ffb3ae",
+                    "error": "#ffb4ab",
+                    "on-surface-variant": "#e4beba",
+                    "on-primary-fixed-variant": "#930014",
+                    "error-container": "#93000a",
+                    "outline": "#ab8986",
+                    "background": "#0c1320",
+                    "on-secondary-fixed": "#111c2d",
+                    "on-error": "#690005",
+                    "on-tertiary-container": "#5b020f",
+                    "surface-container-highest": "#2e3543",
+                    "surface-container": "#19202d",
+                    "inverse-surface": "#dce2f5",
+                    "primary-fixed-dim": "#ffb3ae",
+                    "on-background": "#dce2f5",
+                    "surface": "#0c1320",
+                    "tertiary-container": "#e46b6c",
+                    "inverse-primary": "#ba1724",
+                    "inverse-on-surface": "#2a303f",
+                    "secondary-fixed": "#d8e3fb",
+                    "secondary": "#bcc7de",
+                    "primary-container": "#ff5352",
+                    "surface-container-high": "#232a38",
+                    "surface-dim": "#0c1320",
+                    "on-secondary-fixed-variant": "#3c475a",
+                    "tertiary-fixed-dim": "#ffb3b1",
+                    "tertiary-fixed": "#ffdad8",
+                    "surface-container-low": "#151c29",
+                    "secondary-fixed-dim": "#bcc7de",
+                    "on-tertiary-fixed": "#410007",
+                    "on-surface": "#dce2f5",
+                    "on-tertiary": "#640a15",
+                    "surface-variant": "#2e3543",
+                    "secondary-container": "#3e495d",
+                    "on-primary-fixed": "#410004",
+                    "primary": "#ffb3ae",
+                    "on-primary-container": "#5c0008",
+                    "on-error-container": "#ffdad6",
+                    "surface-container-lowest": "#070e1b",
+                    "on-primary": "#68000b",
+                    "on-secondary": "#263143",
+                    "primary-fixed": "#ffdad7",
+                    "tertiary": "#ffb3b1"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "margin-mobile": "16px",
+                    "gutter": "24px",
+                    "margin-desktop": "48px",
+                    "container-max": "1280px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-md": ["Inter"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "600" }],
+                    "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                    "headline-lg-mobile": ["30px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                    "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                    "headline-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                    "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                    "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        /* Kinetic Glow Custom Style (cannot be done purely with Tailwind without arbitrary values, so doing an inline custom utility for the design system requirement) */
+        .kinetic-glow:focus-within {
+            box-shadow: 0 0 0 2px rgba(255, 83, 82, 0.5); /* primary-container with opacity */
+        }
+        
+        .kinetic-red-shadow {
+            box-shadow: 0 4px 14px 0 rgba(255, 83, 82, 0.25);
+        }
+
+        .kinetic-red-shadow:hover {
+            box-shadow: 0 6px 20px rgba(255, 83, 82, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md text-body-md selection:bg-primary-container selection:text-white min-h-screen antialiased flex">
+<!-- SideNavBar (Shared Component JSON) -->
+<nav class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant dark:border-outline-variant py-gutter px-gutter py-unit-gutter px-unit-gutter z-50">
+<!-- Header / Logo -->
+<div class="flex items-center gap-2 mb-8 px-2">
+<span class="material-symbols-outlined text-primary-container text-3xl" style="font-variation-settings: 'FILL' 1;">account_tree</span>
+<h1 class="font-headline-md text-headline-md font-bold text-primary-container dark:text-primary-container tracking-tight">ProjectFlow</h1>
+</div>
+<!-- Navigation Links -->
+<div class="flex flex-col gap-2 w-full">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-surface-variant font-medium hover:bg-surface-container-highest dark:hover:bg-surface-container-highest hover:text-on-surface dark:hover:text-on-surface transition-all active:scale-95 duration-200 transition-transform" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-surface-variant font-medium hover:bg-surface-container-highest dark:hover:bg-surface-container-highest hover:text-on-surface dark:hover:text-on-surface transition-all active:scale-95 duration-200 transition-transform" href="#">
+<span class="material-symbols-outlined">account_tree</span>
+<span class="font-label-md text-label-md">Pipeline</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-surface-variant font-medium hover:bg-surface-container-highest dark:hover:bg-surface-container-highest hover:text-on-surface dark:hover:text-on-surface transition-all active:scale-95 duration-200 transition-transform" href="#">
+<span class="material-symbols-outlined">list_alt</span>
+<span class="font-label-md text-label-md">List</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-surface-variant font-medium hover:bg-surface-container-highest dark:hover:bg-surface-container-highest hover:text-on-surface dark:hover:text-on-surface transition-all active:scale-95 duration-200 transition-transform" href="#">
+<span class="material-symbols-outlined">timeline</span>
+<span class="font-label-md text-label-md">Timeline</span>
+</a>
+<!-- Active State Navigation -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-primary-container dark:text-primary-container font-bold border-r-2 border-primary-container bg-primary-container/5 active:scale-95 duration-200 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</div>
+</nav>
+<!-- TopNavBar (Shared Component JSON) -->
+<header class="hidden md:flex items-center justify-between px-margin-desktop w-full h-16 bg-surface dark:bg-surface fixed top-0 right-0 left-64 border-b border-outline-variant dark:border-outline-variant z-40">
+<!-- Search Bar -->
+<div class="flex-1 max-w-md flex items-center relative group">
+<span class="material-symbols-outlined absolute left-3 text-on-surface-variant group-focus-within:text-primary-container transition-colors">search</span>
+<input class="w-full bg-background border border-outline-variant text-on-surface rounded-lg pl-10 pr-4 py-2 font-body-md text-body-md focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/50 transition-all placeholder:text-on-surface-variant" placeholder="Search projects..." type="text"/>
+</div>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary-container dark:hover:text-primary-container transition-colors cursor-pointer active:opacity-70 transition-opacity p-2 rounded-full hover:bg-surface-container-highest">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary-container dark:hover:text-primary-container transition-colors cursor-pointer active:opacity-70 transition-opacity p-2 rounded-full hover:bg-surface-container-highest">
+<span class="material-symbols-outlined">apps</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant cursor-pointer hover:border-primary-container transition-colors ml-2">
+<img alt="User Workspace Profile" class="w-full h-full object-cover" data-alt="A close-up studio portrait of a professional individual set against a stark, pure black background. The lighting is dramatic and moody, utilizing high-contrast cinematic techniques to highlight facial features. Subtle, vibrant red rim light accents the edge of their silhouette, reinforcing the high-performance, active intelligence theme of the UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKtv3e-1aBcThQVKdijCZdTEJeptWRr-CcsEpmsIA17g64LY767OMiOnweSStEly5LhsaV2eK5nvVD2r-MAGREcpywblgo7AacwdKZgRCghYE1dD-dcYP35nQ9nXXU6NrktIZycUqObu2JkzCFwERqHj4JE-rOOad0fa_fKVb5zf_vaa4Pol-LiNxsl4-5MmsZLdc-dz1lehJJ4Fd5LcdYbjn9RbiH-mI0FTl-pIPnCIXnmUtRNQ_9I6_ARZrQRfimfN2v7HxoUVav"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="w-full md:ml-64 mt-16 p-margin-mobile md:p-margin-desktop bg-background min-h-[calc(100vh-4rem)] flex justify-center">
+<div class="w-full max-w-container-max flex flex-col gap-6">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-2">
+<div>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-1">Project Settings</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage your project configuration, workflows, and integrations.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 rounded border border-outline-variant text-on-surface hover:bg-surface-container transition-colors font-label-md text-label-md">Discard</button>
+<button class="px-4 py-2 rounded bg-primary-container text-white kinetic-red-shadow transition-all font-label-md text-label-md">Save Changes</button>
+</div>
+</div>
+<!-- Tabs -->
+<div class="border-b border-outline-variant flex gap-8 mb-4" role="tablist" aria-label="Settings sections">
+<button class="pb-3 border-b-2 border-primary-container text-primary-container font-label-md text-label-md transition-colors flex items-center gap-2" id="tab-btn-general" role="tab" aria-selected="true" aria-controls="tab-general" data-tab="general">
+<span class="material-symbols-outlined text-[18px]" aria-hidden="true">tune</span>
+                    General
+                </button>
+<button class="pb-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors flex items-center gap-2" id="tab-btn-workflow" role="tab" aria-selected="false" aria-controls="tab-workflow" data-tab="workflow">
+<span class="material-symbols-outlined text-[18px]" aria-hidden="true">account_tree</span>
+                    Workflow
+                </button>
+<button class="pb-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors flex items-center gap-2" id="tab-btn-advanced" role="tab" aria-selected="false" aria-controls="tab-advanced" data-tab="advanced">
+<span class="material-symbols-outlined text-[18px]" aria-hidden="true">api</span>
+                    Advanced
+                </button>
+</div>
+<!-- Tab Content: General -->
+<div class="flex flex-col gap-6 animate-[fadeIn_0.3s_ease-out]" id="tab-general" role="tabpanel" aria-labelledby="tab-btn-general">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Left Column: Identity -->
+<div class="lg:col-span-2 flex flex-col gap-6">
+<!-- Card: Project Identity -->
+<div class="bg-surface border border-surface-container-highest rounded-xl p-6 shadow-sm hover:-translate-y-[2px] hover:border-outline-variant transition-all">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-6 border-b border-outline-variant pb-3">Project Identity</h3>
+<div class="flex flex-col gap-5">
+<div class="flex flex-col gap-1 relative group">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Project Name</label>
+<input class="w-full bg-background border border-outline-variant rounded-lg p-3 text-on-surface font-body-md text-body-md focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/50 transition-all" type="text" value="Alpha Centauri Redesign"/>
+</div>
+<div class="flex flex-col gap-1 relative group">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Description</label>
+<textarea class="w-full bg-background border border-outline-variant rounded-lg p-3 text-on-surface font-body-md text-body-md focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/50 transition-all resize-none" rows="4">A complete architectural overhaul of the main fintech trading engine, focusing on sub-millisecond latency and high-contrast analytical UI modules.</textarea>
+</div>
+</div>
+</div>
+<!-- Card: Visibility Settings -->
+<div class="bg-surface border border-surface-container-highest rounded-xl p-6 shadow-sm hover:-translate-y-[2px] hover:border-outline-variant transition-all">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-6 border-b border-outline-variant pb-3">Visibility &amp; Access</h3>
+<div class="flex flex-col gap-4">
+<label class="flex items-start gap-4 p-4 rounded-lg border border-primary-container/30 bg-primary-container/5 cursor-pointer transition-colors hover:bg-primary-container/10">
+<div class="mt-0.5">
+<input checked="" class="w-4 h-4 text-primary-container bg-background border-outline-variant focus:ring-primary-container focus:ring-offset-background" name="visibility" type="radio"/>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Private (Invite Only)</span>
+<span class="font-body-md text-body-md text-on-surface-variant mt-1">Only specific individuals invited to this project can view and edit its contents.</span>
+</div>
+</label>
+<label class="flex items-start gap-4 p-4 rounded-lg border border-outline-variant bg-background cursor-pointer transition-colors hover:border-primary-container/50">
+<div class="mt-0.5">
+<input class="w-4 h-4 text-primary-container bg-background border-outline-variant focus:ring-primary-container focus:ring-offset-background" name="visibility" type="radio"/>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Workspace Visible</span>
+<span class="font-body-md text-body-md text-on-surface-variant mt-1">Anyone in your ProjectFlow workspace can search for and view this project.</span>
+</div>
+</label>
+</div>
+</div>
+</div>
+<!-- Right Column: Logo & Status -->
+<div class="flex flex-col gap-6">
+<!-- Card: Project Logo -->
+<div class="bg-surface border border-surface-container-highest rounded-xl p-6 shadow-sm hover:-translate-y-[2px] hover:border-outline-variant transition-all">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-6 border-b border-outline-variant pb-3">Project Logo</h3>
+<div class="flex flex-col items-center gap-4">
+<div class="w-32 h-32 rounded-xl overflow-hidden border-2 border-dashed border-outline-variant relative group cursor-pointer hover:border-primary-container transition-colors flex items-center justify-center bg-background">
+<img alt="Abstract Logo" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity" data-alt="A highly complex, geometric 3D abstract rendering acting as a logo. The shape is faceted and sharp, floating in a dark void. The primary lighting is a stark, high-contrast cool white, intersected by a piercing, luminous vibrant red neon laser effect that slices through the composition. The aesthetic is extremely technical, modern, and aligned with corporate high-performance imagery." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7_crUHfipaNEgwE0zc927CgTnQrMlKp-a5iBA13Zm_eqzDqOF8T3KsnIQmv1AN_R1UWzDbmxqbuPIBd6mnZuw_cgy8coDd6grDCwL8ElPnbZeYCJ5jeZlwIECVvgcLPTecM1IVu4bLQHY9T_9xr14pwXGNisz6jCaHYCP5pPLusBzH558OtjGnze83AKcJwazCfP2BlwWRUarDLj-j1pcV7S6pvejMaaLKgiWrLBn9gY8VpaM_GuRSa129UCGSryVknNdYbQg4oHs"/>
+<div class="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10 text-primary-container">
+<span class="material-symbols-outlined text-3xl">upload</span>
+<span class="font-label-sm text-label-sm mt-1">Upload New</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant text-center px-4">Upload a square image (min 200x200px). Transparent PNGs work best.</p>
+<button class="px-4 py-2 w-full rounded border border-outline-variant text-on-surface hover:text-primary-container hover:border-primary-container transition-colors font-label-md text-label-md">Remove Logo</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Tab Content: Workflow (Hidden by default) -->
+<div class="hidden flex-col gap-6" id="tab-workflow" role="tabpanel" aria-labelledby="tab-btn-workflow">
+<!-- Visual Rot Settings -->
+<div class="bg-surface border border-surface-container-highest rounded-xl p-6 shadow-sm">
+<div class="flex items-center justify-between border-b border-outline-variant pb-3 mb-6">
+<h3 class="font-headline-md text-headline-md text-on-surface">Visual Rot &amp; Urgency</h3>
+<span class="px-2 py-1 rounded bg-primary-container/10 text-primary-container font-label-sm text-label-sm uppercase tracking-wider">Beta Feature</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 max-w-3xl">Configure the threshold for "Visual Rot". Cards that haven't been updated within this timeframe will begin to visually degrade or pulse with an energetic red glow to highlight neglect.</p>
+<div class="flex flex-col gap-6 max-w-2xl">
+<div class="flex items-center gap-4">
+<span class="font-label-md text-label-md text-on-surface w-24">Threshold:</span>
+<input class="flex-1 accent-primary-container h-2 bg-surface-container-highest rounded-lg appearance-none cursor-pointer" max="30" min="1" type="range" value="14"/>
+<span class="font-label-md text-label-md text-primary-container w-16 text-right">14 Days</span>
+</div>
+<div class="flex items-center gap-4 mt-2">
+<span class="font-label-md text-label-md text-on-surface w-24">Effect:</span>
+<div class="flex gap-3">
+<button class="px-4 py-2 rounded-lg border-2 border-primary-container bg-primary-container/10 text-primary-container font-label-md text-label-md">Kinetic Glow</button>
+<button class="px-4 py-2 rounded-lg border border-outline-variant text-on-surface hover:border-primary-container/50 font-label-md text-label-md transition-colors">Grayscale Fade</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Custom Statuses -->
+<div class="bg-surface border border-surface-container-highest rounded-xl p-6 shadow-sm">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-6 border-b border-outline-variant pb-3">Pipeline Statuses</h3>
+<div class="flex flex-col gap-3">
+<!-- Status Row -->
+<div class="flex items-center gap-4 p-3 rounded-lg bg-background border border-outline-variant group">
+<span class="material-symbols-outlined text-on-surface-variant cursor-grab active:cursor-grabbing">drag_indicator</span>
+<div class="w-4 h-4 rounded-full bg-surface-container-highest border border-outline-variant"></div>
+<input class="bg-transparent border-none text-on-surface font-body-md text-body-md focus:ring-0 flex-1 p-0" type="text" value="Backlog"/>
+<button class="text-on-surface-variant hover:text-primary-container opacity-0 group-hover:opacity-100 transition-all"><span class="material-symbols-outlined">delete</span></button>
+</div>
+<!-- Status Row -->
+<div class="flex items-center gap-4 p-3 rounded-lg bg-background border border-outline-variant group">
+<span class="material-symbols-outlined text-on-surface-variant cursor-grab active:cursor-grabbing">drag_indicator</span>
+<div class="w-4 h-4 rounded-full bg-secondary border border-secondary-container"></div>
+<input class="bg-transparent border-none text-on-surface font-body-md text-body-md focus:ring-0 flex-1 p-0" type="text" value="In Progress"/>
+<button class="text-on-surface-variant hover:text-primary-container opacity-0 group-hover:opacity-100 transition-all"><span class="material-symbols-outlined">delete</span></button>
+</div>
+<!-- Status Row -->
+<div class="flex items-center gap-4 p-3 rounded-lg bg-background border border-outline-variant group">
+<span class="material-symbols-outlined text-on-surface-variant cursor-grab active:cursor-grabbing">drag_indicator</span>
+<div class="w-4 h-4 rounded-full bg-primary-container border border-primary-container shadow-[0_0_8px_rgba(255,83,82,0.5)]"></div>
+<input class="bg-transparent border-none text-on-surface font-body-md text-body-md focus:ring-0 flex-1 p-0" type="text" value="Review Required"/>
+<button class="text-on-surface-variant hover:text-primary-container opacity-0 group-hover:opacity-100 transition-all"><span class="material-symbols-outlined">delete</span></button>
+</div>
+<button class="flex items-center gap-2 mt-2 text-primary-container font-label-md text-label-md hover:text-primary transition-colors w-max p-2 rounded-lg hover:bg-primary-container/5">
+<span class="material-symbols-outlined">add</span>
+                            Add New Status
+                        </button>
+</div>
+</div>
+</div>
+<!-- Tab Content: Advanced (Hidden by default) -->
+<div class="hidden flex-col gap-6" id="tab-advanced" role="tabpanel" aria-labelledby="tab-btn-advanced">
+<!-- Danger Zone -->
+<div class="bg-surface border border-error/20 rounded-xl p-6 shadow-sm relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary-container"></div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Danger Zone</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Actions in this area are irreversible. Please proceed with extreme caution.</p>
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between p-4 bg-background border border-outline-variant rounded-lg">
+<div>
+<h4 class="font-label-md text-label-md text-on-surface mb-1">Archive Project</h4>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Make this project read-only for all users. It will be hidden from main dashboards.</p>
+</div>
+<button class="px-4 py-2 rounded border border-outline-variant text-on-surface hover:border-primary-container hover:text-primary-container transition-colors font-label-md text-label-md whitespace-nowrap">Archive Project</button>
+</div>
+<div class="flex items-center justify-between p-4 bg-background border border-error/30 rounded-lg">
+<div>
+<h4 class="font-label-md text-label-md text-primary-container mb-1">Delete Project</h4>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Permanently wipe all project data, history, and attachments. This cannot be undone.</p>
+</div>
+<button class="px-4 py-2 rounded bg-primary-container/10 border border-primary-container text-primary-container hover:bg-primary-container hover:text-white transition-all font-label-md text-label-md whitespace-nowrap">Delete Project</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Tab Switching Logic -->
+<script>
+    (function () {
+        const TAB_IDS = ['general', 'workflow', 'advanced'];
+
+        function switchTab(tabId) {
+            TAB_IDS.forEach(id => {
+                const panel = document.getElementById(`tab-${id}`);
+                const btn = document.getElementById(`tab-btn-${id}`);
+                const isActive = id === tabId;
+
+                panel.classList.toggle('hidden', !isActive);
+                panel.classList.toggle('flex', isActive);
+                if (isActive) panel.classList.add('animate-[fadeIn_0.3s_ease-out]');
+
+                btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+                btn.classList.toggle('border-primary-container', isActive);
+                btn.classList.toggle('text-primary-container', isActive);
+                btn.classList.toggle('border-transparent', !isActive);
+                btn.classList.toggle('text-on-surface-variant', !isActive);
+            });
+        }
+
+        // Wire up buttons via event delegation (no inline handlers)
+        document.querySelector('[role="tablist"]').addEventListener('click', e => {
+            const btn = e.target.closest('[data-tab]');
+            if (btn) switchTab(btn.dataset.tab);
+        });
+
+        // Arrow-key keyboard navigation for tabs (ARIA pattern)
+        document.querySelector('[role="tablist"]').addEventListener('keydown', e => {
+            const tabs = TAB_IDS.map(id => document.getElementById(`tab-btn-${id}`));
+            const idx = tabs.indexOf(document.activeElement);
+            if (idx === -1) return;
+            if (e.key === 'ArrowRight') {
+                const next = tabs[(idx + 1) % tabs.length];
+                next.focus();
+                switchTab(next.dataset.tab);
+                e.preventDefault();
+            } else if (e.key === 'ArrowLeft') {
+                const prev = tabs[(idx - 1 + tabs.length) % tabs.length];
+                prev.focus();
+                switchTab(prev.dataset.tab);
+                e.preventDefault();
+            }
+        });
+
+        // Custom Tailwind animation for smooth transitions
+        tailwind.config.theme.extend.keyframes = {
+            ...tailwind.config.theme.extend.keyframes,
+            fadeIn: {
+                '0%': { opacity: '0', transform: 'translateY(10px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+        };
+    }());
+</script>
+<!-- ProjectFlow Hub Navigation -->
+<a href="../" style="position:fixed;top:12px;right:12px;z-index:9999;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:rgba(12,19,32,0.92);border:1px solid rgba(255,179,174,0.3);color:#ffb3ae;font-family:Inter,system-ui,sans-serif;font-size:12px;font-weight:700;text-decoration:none;backdrop-filter:blur(8px);transition:border-color .2s,background .2s;">&larr; Hub</a>
+</body></html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ProjectFlow - Screen Gallery</title>
+  <meta name="description" content="ProjectFlow screen gallery — browse all dashboard, pipeline, team management, and notification prototype screens." />
+  <meta property="og:title" content="ProjectFlow - Screen Gallery" />
+  <meta property="og:description" content="Browse all ProjectFlow prototype screens organized by category." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#0c1320" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23ff5352'/%3E%3Ctext x='32' y='39' text-anchor='middle' font-family='Inter,Arial,sans-serif' font-size='22' font-weight='800' fill='white'%3EPF%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      color-scheme: dark;
+      --background: #0c1320;
+      --surface: #19202d;
+      --surface-high: #232a38;
+      --on-surface: #dce2f5;
+      --primary: #ffb3ae;
+      --primary-strong: #ff5352;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, rgba(255, 83, 82, 0.10), transparent 26rem),
+                  radial-gradient(circle at 85% 0%, rgba(188, 199, 222, 0.13), transparent 22rem),
+                  var(--background);
+      color: var(--on-surface);
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 64px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid rgba(255, 83, 82, 0.2);
+    }
+
+    header h1 {
+      font-size: 48px;
+      font-weight: 800;
+      margin: 0 0 16px 0;
+      background: linear-gradient(135deg, #ffb3ae, #ff5352);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    header p {
+      font-size: 18px;
+      color: rgba(220, 226, 245, 0.8);
+      margin: 0;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .screen-card {
+      background: var(--surface);
+      border: 1px solid rgba(255, 83, 82, 0.15);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .screen-card:hover {
+      border-color: var(--primary-strong);
+      box-shadow: 0 8px 24px rgba(255, 83, 82, 0.15);
+      transform: translateY(-4px);
+    }
+
+    .screen-card img {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      background: var(--surface-high);
+    }
+
+    .screen-info {
+      padding: 20px;
+    }
+
+    .screen-info h3 {
+      margin: 0 0 8px 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--on-surface);
+    }
+
+    .screen-info p {
+      margin: 0;
+      font-size: 13px;
+      color: rgba(220, 226, 245, 0.6);
+    }
+
+    .view-btn {
+      margin-top: 12px;
+      display: inline-block;
+      padding: 8px 16px;
+      background: var(--primary-strong);
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .view-btn:hover {
+      background: #ff6b6a;
+      box-shadow: 0 4px 12px rgba(255, 83, 82, 0.3);
+    }
+
+    .category {
+      margin-bottom: 64px;
+    }
+
+    .category h2 {
+      font-weight: 700;
+      margin: 0 0 32px 0;
+      color: var(--primary);
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--primary-strong);
+      display: inline-block;
+    }
+
+    footer {
+      text-align: center;
+      padding-top: 48px;
+      border-top: 1px solid rgba(255, 83, 82, 0.2);
+      color: rgba(220, 226, 245, 0.6);
+      font-size: 14px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+      margin: 48px 0;
+      padding: 24px;
+      background: rgba(255, 83, 82, 0.05);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 83, 82, 0.1);
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--primary-strong);
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: rgba(220, 226, 245, 0.7);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 32px 16px;
+      }
+
+      header h1 {
+        font-size: 32px;
+      }
+
+      .gallery {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <nav style="margin-bottom: 16px;"><a href="./" style="color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none;">&larr; Back to Hub</a></nav>
+      <h1>ProjectFlow</h1>
+      <p>Modern Project Management Dashboard</p>
+    </header>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-value">11</div>
+        <div class="stat-label">Screen Components</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">∞</div>
+        <div class="stat-label">Responsive Breakpoints</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">100%</div>
+        <div class="stat-label">Accessible (WCAG AA)</div>
+      </div>
+    </div>
+
+    <!-- Dashboard Screens -->
+    <div class="category">
+      <h2>Dashboard</h2>
+      <div class="gallery">
+        <div class="screen-card">
+          <img src="team_insights_dashboard_accessibility_fixed/screen.png" alt="Team Insights">
+          <div class="screen-info">
+            <h3>Team Insights</h3>
+            <p>Real-time performance metrics and analytics</p>
+            <a href="team_insights_dashboard_accessibility_fixed/code.html" class="view-btn">View Screen →</a>
+          </div>
+        </div>
+        <div class="screen-card">
+          <img src="team_insights_dashboard_mobile/screen.png" alt="Team Insights Mobile">
+          <div class="screen-info">
+            <h3>Team Insights (Mobile)</h3>
+            <p>Mobile-optimized analytics view</p>
+            <a href="team_insights_dashboard_mobile/code.html" class="view-btn">View Screen →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pipeline Screens -->
+    <div class="category">
+      <h2>Pipeline</h2>
+      <div class="gallery">
+        <div class="screen-card">
+          <img src="project_pipeline_accessibility_fixed/screen.png" alt="Project Pipeline">
+          <div class="screen-info">
+            <h3>Project Pipeline</h3>
+            <p>Manage workflows and project stages</p>
+            <a href="project_pipeline_accessibility_fixed/code.html" class="view-btn">View Screen →</a>
+          </div>
+        </div>
+        <div class="screen-card">
+          <img src="project_pipeline_mobile/screen.png" alt="Project Pipeline Mobile">
+          <div class="screen-info">
+            <h3>Project Pipeline (Mobile)</h3>
+            <p>Mobile-friendly pipeline view</p>
+            <a href="project_pipeline_mobile/code.html" class="view-btn">View Screen →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project Management -->
+    <div class="category">
+      <h2>Project Management</h2>
+      <div class="gallery">
+        <div class="screen-card">
+          <img src="project_list_view_accessibility_fixed/screen.png" alt="Project List">
+          <div class="screen-info">
+            <h3>Project List</h3>
+            <p>Browse and manage all projects</p>
+            <a href="project_list_view_accessibility_fixed/code.html" class="view-btn">View Screen →</a>
+          </div>
+        </div>
+        <div class="screen-card">
+          <img src="project_settings/screen.png" alt="Project Settings">
+          <div class="screen-info">
+            <h3>Project Settings</h3>
+            <p>Configure project options and access</p>
+            <a href="project_settings/code.html" class="view-btn">View Screen →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Team Management -->
+    <div class="category">
+      <h2>Team</h2>
+      <div class="gallery">
+        <div class="screen-card">
+          <img src="team_management/screen.png" alt="Team Management">
+          <div class="screen-info">
+            <h3>Team Management</h3>
+            <p>Manage workspace members and roles</p>
+            <a href="team_management/code.html" class="view-btn">View Screen →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Task Management -->
+    <div class="category">
+      <h2>Tasks</h2>
+      <div class="gallery">
+        <div class="screen-card">
+          <img src="task_detail_drawer_accessibility_fixed/screen.png" alt="Task Details">
+          <div class="screen-info">
+            <h3>Task Details</h3>
+            <p>View and manage task details</p>
+            <a href="task_detail_drawer_accessibility_fixed/code.html" class="view-btn">View Screen →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notifications & Alerts -->
+    <div class="category">
+      <h2>Notifications</h2>
+      <div class="gallery">
+        <div class="screen-card">
+          <img src="email_task_assignment_notification/screen.png" alt="Task Assignment">
+          <div class="screen-info">
+            <h3>Task Assignment Email</h3>
+            <p>Task notification template</p>
+            <a href="email_task_assignment_notification/code.html" class="view-btn">View Screen →</a>
+          </div>
+        </div>
+        <div class="screen-card">
+          <img src="email_visual_rot_alert/screen.png" alt="Visual Rot Alert">
+          <div class="screen-info">
+            <h3>Visual Rot Alert</h3>
+            <p>Critical stagnation alert notification</p>
+            <a href="email_visual_rot_alert/code.html" class="view-btn">View Screen →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Onboarding -->
+    <div class="category">
+      <h2>Onboarding</h2>
+      <div class="gallery">
+        <div class="screen-card">
+          <img src="onboarding_empty_pipeline_state/screen.png" alt="Onboarding">
+          <div class="screen-info">
+            <h3>Empty State</h3>
+            <p>New user onboarding experience</p>
+            <a href="onboarding_empty_pipeline_state/code.html" class="view-btn">View Screen →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>ProjectFlow © 2025. Built with the Kinetic Noir design system.</p>
+      <p><a href="https://github.com/KingAzden/projectflow" style="color: var(--primary-strong); text-decoration: none;">View on GitHub →</a></p>
+    </footer>
+  </div>
+</body>
+</html>

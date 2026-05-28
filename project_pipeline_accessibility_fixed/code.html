@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Project Pipeline - ProjectFlow</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "background": "#0c1320",
+                "secondary-fixed-dim": "#bcc7de",
+                "on-surface": "#dce2f5",
+                "error": "#ffb4ab",
+                "on-tertiary-container": "#5b020f",
+                "primary": "#ffb3ae",
+                "outline": "#ab8986",
+                "on-secondary": "#263143",
+                "error-container": "#93000a",
+                "on-secondary-fixed": "#111c2d",
+                "on-error": "#690005",
+                "tertiary": "#ffb3b1",
+                "surface-bright": "#323948",
+                "on-tertiary": "#640a15",
+                "surface-container-high": "#232a38",
+                "tertiary-fixed-dim": "#ffb3b1",
+                "on-error-container": "#ffdad6",
+                "inverse-surface": "#dce2f5",
+                "on-background": "#dce2f5",
+                "on-tertiary-fixed": "#410007",
+                "surface-variant": "#2e3543",
+                "secondary": "#bcc7de",
+                "on-secondary-container": "#aeb9d0",
+                "on-primary-fixed": "#410004",
+                "surface-tint": "#ffb3ae",
+                "surface-container-lowest": "#070e1b",
+                "inverse-on-surface": "#2a303f",
+                "secondary-container": "#3e495d",
+                "tertiary-container": "#e46b6c",
+                "surface-dim": "#0c1320",
+                "on-surface-variant": "#e4beba",
+                "primary-fixed-dim": "#ffb3ae",
+                "surface-container-highest": "#2e3543",
+                "on-primary-fixed-variant": "#930014",
+                "surface-container-low": "#151c29",
+                "on-primary": "#68000b",
+                "outline-variant": "#5b403e",
+                "surface": "#0c1320",
+                "secondary-fixed": "#d8e3fb",
+                "on-secondary-fixed-variant": "#3c475a",
+                "inverse-primary": "#ba1724",
+                "primary-container": "#ff5352",
+                "tertiary-fixed": "#ffdad8",
+                "surface-container": "#19202d",
+                "on-primary-container": "#5c0008",
+                "primary-fixed": "#ffdad7",
+                "on-tertiary-fixed-variant": "#842328",
+                        // Custom palette aliases based on guidance
+                        "pipeline-board": "#0B121F",
+                        "pipeline-card": "#161F2F",
+                        "pipeline-border": "#2A3547",
+                        "pipeline-border-hover": "#3F4A5E",
+                        "pipeline-blue": "#0048E5",
+                        "pipeline-amber": "#FFC107",
+        },
+        "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem",
+                        "card": "0.5rem",
+                        "input": "0.25rem"
+        },
+        "spacing": {
+                "margin-mobile": "16px",
+                "gutter": "24px",
+                "margin-desktop": "48px",
+                "unit": "8px",
+                "container-max": "1280px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "base": "4px",
+                        "margin": "24px",
+                        "md": "16px",
+                        "drawer_width": "400px",
+                        "xs": "4px",
+                        "xl": "48px",
+                        "sidebar": "64px"
+        },
+        "fontFamily": {
+                "headline-md": [
+                        "Inter"
+                ],
+                "label-sm": [
+                        "Inter"
+                ],
+                "headline-lg-mobile": [
+                        "Inter"
+                ],
+                "headline-lg": [
+                        "Inter"
+                ],
+                "body-md": [
+                        "Inter"
+                ],
+                "body-lg": [
+                        "Inter"
+                ],
+                "label-md": [
+                        "Inter"
+                ],
+                        "code-sm": ["Inter"]
+        },
+        "fontSize": {
+                "headline-md": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "label-sm": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "30px",
+                        {
+                                "lineHeight": "36px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "headline-lg": [
+                        "40px",
+                        {
+                                "lineHeight": "48px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "label-md": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "500"
+                        }
+                ],
+                        "code-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }]
+        }
+},
+    },
+  }
+</script>
+<style>
+        /* Custom scrollbar for Kanban board */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B121F; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2A3547; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3F4A5E; 
+        }
+        
+        .kanban-board {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding-bottom: 16px;
+            height: calc(100vh - 120px);
+        }
+        
+        .kanban-column {
+            min-width: 300px;
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 8px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+        }
+
+        .kanban-column.drag-over {
+            border-color: #ffb3ae;
+            background-color: rgba(255, 179, 174, 0.05);
+            border-style: dashed;
+        }
+        
+        .visual-rot {
+            animation: pulse-red 2s infinite;
+        }
+        
+        @keyframes pulse-red {
+            0% { text-shadow: 0 0 4px rgba(255, 77, 77, 0.4); color: #FF4D4D; }
+            50% { text-shadow: 0 0 8px rgba(255, 77, 77, 0.8); color: #FF6666; }
+            100% { text-shadow: 0 0 4px rgba(255, 77, 77, 0.4); color: #FF4D4D; }
+        }
+
+        .kanban-card {
+            transition: all 0.2s ease;
+        }
+        
+        .kanban-card.dragging {
+            opacity: 0.5;
+            transform: rotate(2deg) scale(1.05);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+            border-color: #ffb3ae;
+        }
+    
+        @keyframes pulse-rot {
+          0% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.6; transform: scale(0.98); }
+          100% { opacity: 1; transform: scale(1); }
+        }
+
+        .kanban-card.keyboard-active {
+            outline: 2px solid #ffb3ae;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 4px rgba(255, 179, 174, 0.15);
+        }
+        .kanban-card:focus-visible {
+            outline: 2px solid #ffb3ae;
+            outline-offset: 2px;
+        }
+        .kanban-card.drop-indicator-before {
+            box-shadow: 0 -3px 0 0 #ffb3ae;
+        }
+        .kanban-card.drop-indicator-after {
+            box-shadow: 0 3px 0 0 #ffb3ae;
+        }
+        .kanban-card.filtered-out {
+            display: none;
+        }
+
+        .pf-modal-backdrop {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px); z-index: 100;
+            display: none; align-items: center; justify-content: center;
+        }
+        .pf-modal-backdrop.open { display: flex; }
+        .pf-modal {
+            background: #161F2F; border: 1px solid #2A3547;
+            border-radius: 8px; padding: 24px; width: min(440px, 92vw);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .pf-modal label {
+            display: block; font-size: 12px; font-weight: 600;
+            color: #e4beba; margin-bottom: 6px; text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .pf-modal input, .pf-modal select {
+            width: 100%; background: #0B121F; border: 1px solid #2A3547;
+            color: #dce2f5; padding: 8px 10px; border-radius: 4px;
+            font-size: 14px; margin-bottom: 16px;
+        }
+        .pf-modal input:focus, .pf-modal select:focus {
+            outline: none; border-color: #ffb3ae;
+        }
+
+        .pf-toast {
+            position: fixed; bottom: 24px; left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #232a38; border: 1px solid #2A3547;
+            color: #dce2f5; padding: 10px 16px; border-radius: 6px;
+            font-size: 13px; z-index: 200; opacity: 0;
+            transition: opacity .2s, transform .2s;
+            pointer-events: none;
+        }
+        .pf-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        .filter-menu {
+            position: absolute; top: 100%; right: 0; margin-top: 8px;
+            background: #161F2F; border: 1px solid #2A3547;
+            border-radius: 6px; padding: 6px; min-width: 160px;
+            z-index: 40; display: none;
+        }
+        .filter-menu.open { display: block; }
+        .filter-menu button {
+            display: flex; align-items: center; gap: 8px; width: 100%;
+            text-align: left; padding: 8px 10px; font-size: 13px;
+            color: #dce2f5; border-radius: 4px; background: transparent;
+        }
+        .filter-menu button:hover { background: #232a38; }
+        .filter-menu button[aria-pressed="true"]::before {
+            content: "✓"; color: #ffb3ae;
+        }
+        .filter-menu button:not([aria-pressed="true"])::before {
+            content: ""; width: 12px; display: inline-block;
+        }
+    </style>
+</head>
+<body class="bg-surface-container-lowest text-on-surface h-screen overflow-hidden font-body-md flex">
+<!-- SideNavBar -->
+<nav class="bg-surface-container-lowest dark:bg-surface-container-lowest h-screen w-16 hover:w-drawer_width transition-all duration-300 border-r border-outline-variant fixed left-0 top-0 z-40 flex flex-col group overflow-hidden">
+<!-- Logo Area -->
+<div class="h-16 flex items-center px-4 border-b border-outline-variant shrink-0 min-w-max">
+<span class="material-symbols-outlined text-primary dark:text-primary text-2xl">layers</span>
+<div class="ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+<h1 class="font-headline-md text-headline-md font-bold text-primary whitespace-nowrap">ProjectFlow</h1>
+<p class="font-label-md text-label-md text-on-surface-variant whitespace-nowrap">Management Hub</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<div class="flex-1 py-4 flex flex-col gap-2 min-w-max">
+<!-- Inactive -->
+<a class="flex items-center px-4 py-3 text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-all duration-200 ease-in-out border-l-2 border-transparent" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="ml-4 font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">Dashboard</span>
+</a>
+<!-- Active -->
+<a class="flex items-center px-4 py-3 text-primary dark:text-primary border-l-2 border-primary bg-surface-container-low transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">view_kanban</span>
+<span class="ml-4 font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap font-bold">Pipeline</span>
+</a>
+<!-- Inactive -->
+<a class="flex items-center px-4 py-3 text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-all duration-200 ease-in-out border-l-2 border-transparent" href="#">
+<span class="material-symbols-outlined">list_alt</span>
+<span class="ml-4 font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">List</span>
+</a>
+<!-- Inactive -->
+<a class="flex items-center px-4 py-3 text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-all duration-200 ease-in-out border-l-2 border-transparent" href="#">
+<span class="material-symbols-outlined">timeline</span>
+<span class="ml-4 font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">Timeline</span>
+</a>
+</div>
+<!-- Bottom Action / CTA -->
+<div class="p-4 border-t border-outline-variant shrink-0 min-w-max">
+<button aria-label="Add new item" class="w-full flex items-center justify-center bg-primary-container text-on-primary-container rounded-input py-2 px-4 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined mr-2 group-hover:mr-2">add</span>
+<span class="font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">Add Item</span>
+</button>
+</div>
+</nav>
+<!-- Main Content Area (offset by sidebar width) -->
+<div class="flex-1 ml-16 flex flex-col h-screen overflow-hidden bg-background">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-surface flex justify-between items-center w-full h-16 px-md shrink-0 z-30">
+<!-- Search Bar on Left -->
+<div class="flex-1 max-w-md relative">
+<span aria-label="Search" class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" role="img">search</span>
+<input id="pipelineSearch" class="w-full bg-[#161F2F] border border-[#2A3547] text-on-surface rounded-input py-1.5 pl-10 pr-4 focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container font-body-md text-body-md transition-colors placeholder:text-outline-variant" placeholder="Search pipeline..." type="search" aria-label="Search pipeline"/>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-4 ml-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">smart_toy</span>
+</button>
+<div class="h-8 w-px bg-outline-variant mx-2"></div>
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="font-label-md text-label-md">Profile</span>
+<img alt="User avatar" class="w-8 h-8 rounded-full border border-outline-variant" data-alt="A small, professional portrait photo of a user avatar, integrated into a high-density corporate dark mode UI dashboard. The image should be cleanly cropped as a circle, showing a modern business professional in soft, high-key studio lighting against a neutral background. The aesthetic is sharp, clean, and corporate." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCns0abjruADUpUnvekIFAsUDGV5HxhkoQi98QP2AWSt9wBHkYMadMgI8HanZc4S9rZ8R52C0x1QEr3-yo53Cyo2-T6zeR6x2J8uA8krUDlyFIUkTJ6B9tjbxsiUTuhEGT3DIVuCfTVsytLfl7HX7BB80lJNw4hZPlS1FjVTgSBpmxtRVNsBiC4c9Ytmbx_gKans0i16FKa8KEpk6tv7IXG8u2-5xtNaF3X1cFl4TnCB2uXV4KuKQmznlyTa6hjsE8E44416VFWljW2"/>
+</button>
+</div>
+</header>
+<!-- Board Area -->
+<main class="flex-1 overflow-hidden p-6">
+<!-- Board Header -->
+<div class="flex justify-between items-center mb-6">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface m-0">Q3 Product Launch</h2>
+<p class="font-body-md text-body-md mt-1 text-on-surface">Sprint 14 • 8 days remaining</p>
+</div>
+<div class="flex gap-3 relative">
+<div class="relative">
+<button id="filterBtn" aria-haspopup="true" aria-expanded="false" aria-label="Filter tasks by priority" class="bg-[#161F2F] border border-[#2A3547] text-on-surface px-4 py-2 rounded-input hover:border-[#3F4A5E] hover:text-primary transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+<span class="font-label-md text-label-md">Filter <span id="filterLabel" class="text-outline-variant">All</span></span>
+</button>
+<div id="filterMenu" class="filter-menu" role="menu">
+<button role="menuitemradio" aria-pressed="true" data-priority="all">All priorities</button>
+<button role="menuitemradio" aria-pressed="false" data-priority="High">High</button>
+<button role="menuitemradio" aria-pressed="false" data-priority="Medium">Medium</button>
+<button role="menuitemradio" aria-pressed="false" data-priority="Low">Low</button>
+</div>
+</div>
+<button id="newTaskBtn" aria-label="Create new task" class="bg-primary-container text-white px-4 py-2 rounded-input hover:bg-opacity-90 transition-colors font-label-md text-label-md flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                        New Task
+                    </button>
+</div>
+</div>
+<!-- Kanban Columns -->
+<div class="kanban-board">
+<!-- Planning -->
+<div aria-label="Planning tasks" class="kanban-column" data-column="planning" role="region">
+<div class="flex items-center justify-between mb-3 px-1">
+<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider">Planning <span class="text-outline-variant ml-2 column-count" data-count>3</span></h3>
+<button class="text-outline hover:text-primary"><span class="material-symbols-outlined text-[18px]">more_horiz</span></button>
+</div>
+<!-- Card 1 -->
+<div class="kanban-card bg-[#161F2F] border border-[#2A3547] rounded-card p-4 hover:border-[#3F4A5E] cursor-grab transition-all duration-200 hover:-translate-y-[2px] hover:shadow-lg group" draggable="true" data-card-id="card-1" tabindex="0" role="article" aria-roledescription="Draggable task card">
+<div class="flex justify-between items-start mb-2">
+<span class="inline-block px-2 py-0.5 rounded-full bg-error-container/20 border border-error-container/30 text-error text-[10px] font-semibold uppercase tracking-wide">High</span>
+<span class="material-symbols-outlined text-outline-variant text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">drag_indicator</span>
+</div>
+<h4 class="font-body-md text-body-md text-on-surface mb-3 leading-snug font-medium">Define API schema for user telemetry</h4>
+<div class="flex items-center justify-between mt-auto pt-2 border-t border-[#2A3547]/50">
+<div class="flex -space-x-2">
+<img alt="Assignee" class="w-6 h-6 rounded-full border border-[#161F2F]" data-alt="A small circular avatar portrait of a software engineer, designed for a dark mode corporate dashboard. Soft lighting, neutral background, professional attire." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJBsdZR5BEtLcfS6FeZZz6hX-8phAsGk-0CWEtv7Kr_SfIidslgNfaJm5v9sCHc91OnWKGRWrDj-UTufOj0VKzT1vGdqmWTOGJ35N-2eSx9S6BtsZfAXudPfLTyOHls2KlzLsJNoWIupWMUFSNiE5kUGQ6hHFxMS_tjSJ7MywxVa6XhvDcj4E8jmY5Koa1_BXVvyAryUZu4BSHRg0fcrZyfOh7zvC_7D-6gVekJsNV99nVec9SQNOkpR-mp-yMiNVk9DeLPCXVLHLz"/>
+</div>
+<div class="flex items-center gap-2 text-outline-variant">
+<span class="material-symbols-outlined text-[14px]">comment</span>
+<span class="text-[12px]">2</span>
+</div>
+</div>
+</div>
+</div>
+<!-- In Progress -->
+<div aria-label="In-progress tasks" class="kanban-column" data-column="in-progress" role="region">
+<div class="flex items-center justify-between mb-3 px-1">
+<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider">In Progress <span class="text-outline-variant ml-2 column-count" data-count>2</span></h3>
+<button class="text-outline hover:text-primary"><span class="material-symbols-outlined text-[18px]">more_horiz</span></button>
+</div>
+<!-- Card 2 (Visual Rot) -->
+<div class="kanban-card bg-[#161F2F] border border-[#2A3547] rounded-card p-4 hover:border-[#3F4A5E] cursor-grab transition-all duration-200 hover:-translate-y-[2px] hover:shadow-lg group relative overflow-hidden" draggable="true" data-card-id="card-2" tabindex="0" role="article" aria-roledescription="Draggable task card">
+<div class="absolute top-0 right-0 w-1 h-full bg-[#FFC107] opacity-20"></div>
+<div class="flex justify-between items-start mb-2">
+<div class="flex gap-2 items-center">
+<span class="inline-block px-2 py-0.5 rounded-full bg-tertiary-container/20 border border-tertiary-container/30 text-tertiary text-[10px] font-semibold uppercase tracking-wide">Medium</span>
+<div class="flex items-center gap-1 text-tertiary visual-rot" title="Stagnant for 5+ days">Critical Stagnation Detected</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">drag_indicator</span>
+</div>
+<h4 class="font-body-md text-body-md text-on-surface mb-3 leading-snug font-medium">Implement WebGL rendering pipeline for chart components</h4>
+<!-- Sparkline mock -->
+<div class="h-6 w-full mb-3 flex items-end gap-1 opacity-60 visual-rot">
+<div class="w-1/6 bg-[#FF4D4D]/40 h-[20%] rounded-t-sm"></div>
+<div class="w-1/6 bg-[#FF4D4D]/40 h-[40%] rounded-t-sm"></div>
+<div class="w-1/6 bg-[#FF4D4D]/40 h-[30%] rounded-t-sm"></div>
+<div class="w-1/6 bg-[#FF4D4D] h-[80%] rounded-t-sm"></div>
+<div class="w-1/6 bg-outline-variant h-[10%] rounded-t-sm"></div>
+<div class="w-1/6 bg-outline-variant h-[10%] rounded-t-sm"></div>
+</div>
+<div class="flex items-center justify-between mt-auto pt-2 border-t border-[#2A3547]/50">
+<div class="flex -space-x-2">
+<img alt="Assignee" class="w-6 h-6 rounded-full border border-[#161F2F]" data-alt="A small circular avatar portrait of a technical project manager, designed for a high-density dark mode UI. Studio lighting, focused expression." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJadCTNNwCGZIRMnpt1yIKXQ_Z2OGSsR1e0YkwDX0FOz93rtsg_nXqHPpOfhks8cInCd43GZem46ZKwr0L5BOPJBYj0FB0xIvFr5tjd-XLU2mqOkIdyF2l2OPiOHDaJlwfjUKgPCCEYRTfq9_u_wL2y6yszGeGGSlSPWcANM9t2962KH0FqMDECR_-wTeAdp2KOxYychWVl06iLOppAs1VJkcC8nLpjhZu5SrqVe84NXe90EzAbOjmIEmiYoFszhN1MmxCeZ_6qIp3"/>
+<img alt="Assignee" class="w-6 h-6 rounded-full border border-[#161F2F]" data-alt="A small circular avatar portrait of a UI designer, designed for a modern dark mode dashboard. Crisp resolution, modern styling." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhTDUibSjCDdt83A3xqhfG6IjfRs2rUS8MVrrSzL2NZoNRsLwOajYG1i1DIQWVpOkOBL7r40ooPaX3eRP3Bx9r0ZpKPrDPLmKHU3Y_q5_RWufcN92dT3N6AF0gCAVN59BKCxaJe6VTkNk3B4N7T5E2Oh9GnW3GWmgvNeqR7CzhqudCteUQs5pG78isSuHV7TA3_vvkFNXdWnnsEJ6_ThXms1rlfJr_m4yGdRuInH2Ipv1vNT_NUumzd6fDgD_NwdLd1mdD8hNjysLx"/>
+</div>
+<div class="flex items-center gap-3 text-outline-variant">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">attach_file</span>
+<span class="text-[12px]">4</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">checklist</span>
+<span class="text-[12px]">3/8</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Testing -->
+<div aria-label="Tasks in testing" class="kanban-column" data-column="testing" role="region">
+<div class="flex items-center justify-between mb-3 px-1">
+<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider">Testing <span class="text-outline-variant ml-2 column-count" data-count>1</span></h3>
+<button class="text-outline hover:text-primary"><span class="material-symbols-outlined text-[18px]">more_horiz</span></button>
+</div>
+<!-- Card 3 -->
+<div class="kanban-card bg-[#161F2F] border border-[#2A3547] rounded-card p-4 hover:border-[#3F4A5E] cursor-grab transition-all duration-200 hover:-translate-y-[2px] hover:shadow-lg group" draggable="true" data-card-id="card-3" tabindex="0" role="article" aria-roledescription="Draggable task card">
+<div class="flex justify-between items-start mb-2">
+<span class="inline-block px-2 py-0.5 rounded-full bg-secondary-container/20 border border-secondary-container/30 text-secondary text-[10px] font-semibold uppercase tracking-wide">Low</span>
+<span class="material-symbols-outlined text-outline-variant text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">drag_indicator</span>
+</div>
+<h4 class="font-body-md text-body-md text-on-surface mb-3 leading-snug font-medium">Cross-browser QA for new navigation shell</h4>
+<div class="flex items-center justify-between mt-auto pt-2 border-t border-[#2A3547]/50">
+<div class="flex -space-x-2">
+<img alt="Assignee" class="w-6 h-6 rounded-full border border-[#161F2F]" data-alt="A small circular avatar portrait of a QA tester, designed for a dark mode interface. Clear, sharp image, corporate background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBXi5_nuny0SbFtH4JSB4v3e_JHu-uAi2YXs572yXOZRyKb0rA0yfrJ7iq4Q1Fbo2LKnK1t2sp-wH-N0XUGYqW8Dz-j0fKGOL5pgwjxOTBd92qVqoyZwUrnfO4tOyBymFKlyBgiAgqjdnmgI83iJGplrg4S3Sw8YtF0-2OR0El41aIjL27e3HRmBunelp-AUBdII5YiHbfFA7EBgO8LtMMTrsFkbXB4UJr6aJIThO52bElAC61JOi9FnBPmsS4ftuRe-kYtQqIWmNr"/>
+</div>
+<div class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-[14px]">bug_report</span>
+<span class="text-[12px]">1</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Ready to Deploy -->
+<div aria-label="Tasks ready to deploy" class="kanban-column" data-column="ready" role="region">
+<div class="flex items-center justify-between mb-3 px-1">
+<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider">Ready to Deploy <span class="text-outline-variant ml-2 column-count" data-count>0</span></h3>
+<button class="text-outline hover:text-primary"><span class="material-symbols-outlined text-[18px]">more_horiz</span></button>
+</div>
+<div class="h-full border-2 border-dashed border-[#2A3547] rounded-card flex items-center justify-center bg-transparent drop-zone-placeholder">
+<span class="font-label-md text-label-md text-on-surface">Drop cards here</span>
+</div>
+</div>
+<!-- Completed -->
+<div aria-label="Completed tasks" class="kanban-column" data-column="completed" role="region">
+<div class="flex items-center justify-between mb-3 px-1">
+<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider opacity-60">Completed <span class="text-outline-variant ml-2 column-count" data-count>1</span></h3>
+<button class="text-outline hover:text-primary"><span class="material-symbols-outlined text-[18px]">more_horiz</span></button>
+</div>
+<!-- Card 4 (Completed) -->
+<div class="kanban-card bg-[#161F2F]/50 border border-[#2A3547]/50 rounded-card p-4 opacity-70 group hover:shadow-lg transition-all duration-200 hover:-translate-y-[2px]" draggable="true" data-card-id="card-4" tabindex="0" role="article" aria-roledescription="Draggable task card">
+<div class="flex justify-between items-start mb-2">
+<span class="inline-block px-2 py-0.5 rounded-full bg-outline-variant/20 border border-outline-variant/30 text-outline text-[10px] font-semibold uppercase tracking-wide">Medium</span>
+</div>
+<h4 class="font-body-md text-body-md text-on-surface mb-3 leading-snug line-through text-outline font-medium">Update dark mode tokens in design system</h4>
+<div class="flex items-center justify-between mt-auto pt-2 border-t border-[#2A3547]/30">
+<div class="flex -space-x-2">
+<img alt="Assignee" class="w-6 h-6 rounded-full border border-[#161F2F] grayscale opacity-80" data-alt="A small circular avatar portrait of a user, desaturated slightly for a completed task state in a dark mode UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxE9PhcL5D0XzdfDuKyz3nI1yBmc_MYUQk8fzIUprl9XXIRN4L9_ylGhI3MAPFufgzCkxUGP5xITCAuN9xDfkH4to6eIeIXhnPTAmCNIBcmZz_5DigdOHy7tnPk9E7AUj1epUUF46yP_b_XuHyY2_Upmc1raLfDX_kAokg_xpKLxpS10Cab-vRxVsNdVQmlCnShEGe-hWWI6GxssQ0KwRbXdTJmaFNLqO3BkX2AXAQQvAEvUV0fv0iV7rNg2dCpQuzL0aiKrtOOzGL"/>
+</div>
+<div class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+<span class="text-[12px]">Done</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<div id="newTaskModal" class="pf-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="newTaskTitle">
+<form id="newTaskForm" class="pf-modal">
+<h3 id="newTaskTitle" style="margin:0 0 16px;font-size:18px;font-weight:600;color:#dce2f5;">New Task</h3>
+<label for="ntTitle">Title</label>
+<input id="ntTitle" type="text" required maxlength="120" placeholder="What needs doing?"/>
+<label for="ntPriority">Priority</label>
+<select id="ntPriority">
+<option value="High">High</option>
+<option value="Medium" selected>Medium</option>
+<option value="Low">Low</option>
+</select>
+<label for="ntColumn">Column</label>
+<select id="ntColumn">
+<option value="planning">Planning</option>
+<option value="in-progress">In Progress</option>
+<option value="testing">Testing</option>
+<option value="ready">Ready to Deploy</option>
+<option value="completed">Completed</option>
+</select>
+<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;">
+<button type="button" id="ntCancel" style="background:transparent;border:1px solid #2A3547;color:#dce2f5;padding:8px 14px;border-radius:4px;font-size:13px;">Cancel</button>
+<button type="submit" style="background:#ff5352;border:0;color:#fff;padding:8px 14px;border-radius:4px;font-size:13px;font-weight:600;">Create</button>
+</div>
+</form>
+</div>
+<div id="pfToast" class="pf-toast" role="status" aria-live="polite"></div>
+<script>
+(() => {
+    const STORAGE_KEY = 'projectflow:pipeline:v1';
+    const PRIORITY_BADGE = {
+        High:   { cls: 'bg-error-container/20 border border-error-container/30 text-error',             label: 'High' },
+        Medium: { cls: 'bg-tertiary-container/20 border border-tertiary-container/30 text-tertiary',    label: 'Medium' },
+        Low:    { cls: 'bg-secondary-container/20 border border-secondary-container/30 text-secondary', label: 'Low' },
+    };
+
+    const board = document.querySelector('.kanban-board');
+    const columns = () => board.querySelectorAll('.kanban-column');
+    const cardsIn = (col) => col.querySelectorAll('.kanban-card');
+
+    document.querySelectorAll('.kanban-card').forEach(card => {
+        const badge = card.querySelector('span.inline-block');
+        const txt = (badge?.textContent || '').trim();
+        if (PRIORITY_BADGE[txt]) card.dataset.priority = txt;
+        card.querySelectorAll('img').forEach(img => img.setAttribute('draggable', 'false'));
+    });
+
+    function refreshColumn(col) {
+        const visible = [...cardsIn(col)].filter(c => !c.classList.contains('filtered-out'));
+        const countEl = col.querySelector('[data-count]');
+        if (countEl) countEl.textContent = visible.length;
+
+        const ph = col.querySelector('.drop-zone-placeholder');
+        const hasCards = cardsIn(col).length > 0;
+        if (hasCards && ph) ph.remove();
+        if (!hasCards && !ph) {
+            const empty = document.createElement('div');
+            empty.className = 'h-full border-2 border-dashed border-[#2A3547] rounded-card flex items-center justify-center bg-transparent drop-zone-placeholder';
+            empty.innerHTML = '<span class="font-label-md text-label-md text-on-surface">Drop cards here</span>';
+            col.appendChild(empty);
+        }
+    }
+    function refreshAll() { columns().forEach(refreshColumn); }
+
+    function save() {
+        const state = {};
+        columns().forEach(col => {
+            state[col.dataset.column] = [...cardsIn(col)].map(c => c.dataset.cardId);
+        });
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+    }
+    function restore() {
+        let state;
+        try { state = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch {}
+        if (!state) return;
+        const byId = new Map();
+        document.querySelectorAll('.kanban-card').forEach(c => byId.set(c.dataset.cardId, c));
+        Object.entries(state).forEach(([colName, ids]) => {
+            const col = board.querySelector(`[data-column="${colName}"]`);
+            if (!col) return;
+            ids.forEach(id => {
+                const card = byId.get(id);
+                if (card) col.appendChild(card);
+            });
+        });
+    }
+
+    let dragged = null;
+    function clearIndicators() {
+        document.querySelectorAll('.drop-indicator-before, .drop-indicator-after')
+            .forEach(el => el.classList.remove('drop-indicator-before', 'drop-indicator-after'));
+    }
+    function getAfterElement(col, y) {
+        const els = [...cardsIn(col)].filter(c => c !== dragged);
+        return els.reduce((closest, el) => {
+            const box = el.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) return { offset, el };
+            return closest;
+        }, { offset: -Infinity, el: null }).el;
+    }
+    function attachCardHandlers(card) {
+        card.addEventListener('dragstart', (e) => {
+            dragged = card;
+            if (e.dataTransfer) {
+                e.dataTransfer.effectAllowed = 'move';
+                try { e.dataTransfer.setData('text/plain', card.dataset.cardId || ''); } catch {}
+            }
+            requestAnimationFrame(() => card.classList.add('dragging'));
+        });
+        card.addEventListener('dragend', () => {
+            card.classList.remove('dragging');
+            dragged = null;
+            columns().forEach(c => c.classList.remove('drag-over'));
+            clearIndicators();
+            refreshAll(); save();
+        });
+        card.addEventListener('keydown', handleCardKey);
+    }
+    function attachColumnHandlers(col) {
+        col.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            if (!dragged) return;
+            col.classList.add('drag-over');
+            clearIndicators();
+            const after = getAfterElement(col, e.clientY);
+            if (after) {
+                after.classList.add('drop-indicator-before');
+                col.insertBefore(dragged, after);
+            } else {
+                const ph = col.querySelector('.drop-zone-placeholder');
+                if (ph) col.insertBefore(dragged, ph);
+                else col.appendChild(dragged);
+            }
+        });
+        col.addEventListener('dragleave', (e) => {
+            if (!col.contains(e.relatedTarget)) col.classList.remove('drag-over');
+        });
+        col.addEventListener('drop', (e) => {
+            e.preventDefault();
+            col.classList.remove('drag-over');
+            clearIndicators();
+        });
+    }
+
+    let keyboardCard = null;
+    function setKeyboardActive(card) {
+        document.querySelectorAll('.keyboard-active').forEach(c => c.classList.remove('keyboard-active'));
+        keyboardCard = card;
+        if (card) card.classList.add('keyboard-active');
+    }
+    function moveCard(card, dir) {
+        const col = card.closest('.kanban-column');
+        if (!col) return;
+        const cols = [...columns()];
+        const colIdx = cols.indexOf(col);
+        if (dir === 'left' || dir === 'right') {
+            const target = cols[colIdx + (dir === 'left' ? -1 : 1)];
+            if (!target) return;
+            const ph = target.querySelector('.drop-zone-placeholder');
+            if (ph) target.insertBefore(card, ph); else target.appendChild(card);
+        } else {
+            const siblings = [...cardsIn(col)];
+            const idx = siblings.indexOf(card);
+            if (dir === 'up' && idx > 0) col.insertBefore(card, siblings[idx - 1]);
+            if (dir === 'down' && idx < siblings.length - 1) {
+                const next = siblings[idx + 1];
+                col.insertBefore(card, next.nextSibling);
+            }
+        }
+        card.focus();
+        refreshAll(); save();
+    }
+    function handleCardKey(e) {
+        const card = e.currentTarget;
+        if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault();
+            setKeyboardActive(keyboardCard === card ? null : card);
+            toast(keyboardCard ? 'Arrow keys to move. Enter or Esc to drop.' : 'Card released.');
+            return;
+        }
+        if (e.key === 'Escape') { setKeyboardActive(null); return; }
+        if (!keyboardCard || keyboardCard !== card) return;
+        const map = { ArrowLeft: 'left', ArrowRight: 'right', ArrowUp: 'up', ArrowDown: 'down' };
+        if (map[e.key]) { e.preventDefault(); moveCard(card, map[e.key]); }
+    }
+
+    let activePriority = 'all';
+    let activeQuery = '';
+    function applyFilters() {
+        document.querySelectorAll('.kanban-card').forEach(card => {
+            const title = (card.querySelector('h4')?.textContent || '').toLowerCase();
+            const priorityOk = activePriority === 'all' || card.dataset.priority === activePriority;
+            const queryOk = !activeQuery || title.includes(activeQuery);
+            card.classList.toggle('filtered-out', !(priorityOk && queryOk));
+        });
+        refreshAll();
+    }
+
+    document.getElementById('pipelineSearch').addEventListener('input', (e) => {
+        activeQuery = e.target.value.trim().toLowerCase();
+        applyFilters();
+    });
+
+    const filterBtn = document.getElementById('filterBtn');
+    const filterMenu = document.getElementById('filterMenu');
+    const filterLabel = document.getElementById('filterLabel');
+    filterBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const open = filterMenu.classList.toggle('open');
+        filterBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    document.addEventListener('click', (e) => {
+        if (!filterMenu.contains(e.target) && !filterBtn.contains(e.target)) {
+            filterMenu.classList.remove('open');
+            filterBtn.setAttribute('aria-expanded', 'false');
+        }
+    });
+    filterMenu.querySelectorAll('button[data-priority]').forEach(b => {
+        b.addEventListener('click', () => {
+            activePriority = b.dataset.priority;
+            filterMenu.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+            filterLabel.textContent = activePriority === 'all' ? 'All' : activePriority;
+            filterMenu.classList.remove('open');
+            filterBtn.setAttribute('aria-expanded', 'false');
+            applyFilters();
+        });
+    });
+
+    const modal = document.getElementById('newTaskModal');
+    const form = document.getElementById('newTaskForm');
+    function openModal() {
+        modal.classList.add('open');
+        document.getElementById('ntTitle').focus();
+    }
+    function closeModal() {
+        modal.classList.remove('open');
+        form.reset();
+    }
+    document.getElementById('newTaskBtn').addEventListener('click', openModal);
+    document.getElementById('ntCancel').addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+    });
+
+    function createCard({ title, priority }) {
+        const card = document.createElement('div');
+        card.className = 'kanban-card bg-[#161F2F] border border-[#2A3547] rounded-card p-4 hover:border-[#3F4A5E] cursor-grab transition-all duration-200 hover:-translate-y-[2px] hover:shadow-lg group';
+        card.setAttribute('draggable', 'true');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('role', 'article');
+        card.dataset.cardId = 'card-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7);
+        card.dataset.priority = priority;
+        const badge = PRIORITY_BADGE[priority];
+        card.innerHTML = `
+            <div class="flex justify-between items-start mb-2">
+                <span class="inline-block px-2 py-0.5 rounded-full ${badge.cls} text-[10px] font-semibold uppercase tracking-wide">${badge.label}</span>
+                <span class="material-symbols-outlined text-outline-variant text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">drag_indicator</span>
+            </div>
+            <h4 class="font-body-md text-body-md text-on-surface mb-3 leading-snug font-medium"></h4>
+            <div class="flex items-center justify-between mt-auto pt-2 border-t border-[#2A3547]/50">
+                <div class="flex -space-x-2"></div>
+                <div class="flex items-center gap-2 text-outline-variant">
+                    <span class="material-symbols-outlined text-[14px]">schedule</span>
+                    <span class="text-[12px]">just now</span>
+                </div>
+            </div>`;
+        card.querySelector('h4').textContent = title;
+        attachCardHandlers(card);
+        return card;
+    }
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = document.getElementById('ntTitle').value.trim();
+        const priority = document.getElementById('ntPriority').value;
+        const colName = document.getElementById('ntColumn').value;
+        if (!title) return;
+        const col = board.querySelector(`[data-column="${colName}"]`);
+        const card = createCard({ title, priority });
+        const ph = col.querySelector('.drop-zone-placeholder');
+        if (ph) col.insertBefore(card, ph); else col.appendChild(card);
+        closeModal();
+        refreshAll(); save();
+        toast('Task added');
+    });
+
+    const toastEl = document.getElementById('pfToast');
+    let toastTimer;
+    function toast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2200);
+    }
+
+    document.querySelectorAll('.kanban-card').forEach(attachCardHandlers);
+    columns().forEach(attachColumnHandlers);
+    restore();
+    refreshAll();
+})();
+</script>
+<!-- ProjectFlow Hub Navigation -->
+<a href="../" style="position:fixed;top:12px;right:12px;z-index:9999;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:rgba(12,19,32,0.92);border:1px solid rgba(255,179,174,0.3);color:#ffb3ae;font-family:Inter,system-ui,sans-serif;font-size:12px;font-weight:700;text-decoration:none;backdrop-filter:blur(8px);transition:border-color .2s,background .2s;">&larr; Hub</a>
+</body></html>
