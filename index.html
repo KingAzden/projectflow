@@ -3798,8 +3798,10 @@
         if (!_openCard || _openCardCol === "inprogress") return;
         const srcZone = document.getElementById("col-cards-" + _openCardCol);
         const dstZone = document.getElementById("col-cards-inprogress");
-        // Move card
-        _openCard.remove();
+        if (!srcZone || !dstZone) return;
+        // Detach card first, then check if source is empty
+        const cardToMove = _openCard;
+        srcZone.removeChild(cardToMove);
         if (!srcZone.querySelector(".task-card"))
           srcZone.innerHTML = '<div class="col-empty">No tasks yet</div>';
         const srcCount = document.getElementById("col-count-" + _openCardCol);
@@ -3809,9 +3811,9 @@
         );
         const empty = dstZone.querySelector(".col-empty");
         if (empty) empty.remove();
-        _openCard.dataset.col = "inprogress";
-        makeDraggable(_openCard, "inprogress");
-        dstZone.appendChild(_openCard);
+        cardToMove.dataset.col = "inprogress";
+        makeDraggable(cardToMove, "inprogress");
+        dstZone.appendChild(cardToMove);
         const dstCount = document.getElementById("col-count-inprogress");
         dstCount.textContent = parseInt(dstCount.textContent || "0") + 1;
         // Update modal status
@@ -3845,16 +3847,23 @@
       let _dragSrcCol = null;
       function makeDraggable(card, colId) {
         card.setAttribute("draggable", "true");
-        card.addEventListener("dragstart", (e) => {
+        // Remove old listeners by replacing with a clone, then re-attach
+        if (card._dragStartFn)
+          card.removeEventListener("dragstart", card._dragStartFn);
+        if (card._dragEndFn)
+          card.removeEventListener("dragend", card._dragEndFn);
+        card._dragStartFn = (e) => {
           _dragCard = card;
-          _dragSrcCol = colId;
+          _dragSrcCol = card.dataset.col;
           setTimeout(() => card.classList.add("dragging"), 0);
           e.dataTransfer.effectAllowed = "move";
-        });
-        card.addEventListener("dragend", () => {
+        };
+        card._dragEndFn = () => {
           card.classList.remove("dragging");
           _dragCard = null;
-        });
+        };
+        card.addEventListener("dragstart", card._dragStartFn);
+        card.addEventListener("dragend", card._dragEndFn);
       }
       function initDropZones() {
         const cols = ["planning", "inprogress", "testing", "deploy"];
