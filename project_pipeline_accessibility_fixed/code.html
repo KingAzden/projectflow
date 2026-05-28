@@ -636,10 +636,14 @@
     }
 
     let dragged = null;
-    function clearIndicators() {
-        document.querySelectorAll('.drop-indicator-before, .drop-indicator-after')
-            .forEach(el => el.classList.remove('drop-indicator-before', 'drop-indicator-after'));
-    }
+    let dropTarget = { col: null, after: null }; // resolved on drop, not on dragover
+
+    // A thin line shown between cards while hovering
+    const dropLine = document.createElement('div');
+    dropLine.id = 'dnd-drop-line';
+    dropLine.style.cssText = 'height:3px;background:#ffb3ae;border-radius:2px;margin:2px 4px;pointer-events:none;display:none;';
+    document.body.appendChild(dropLine);
+
     function getAfterElement(col, y) {
         const els = [...cardsIn(col)].filter(c => c !== dragged);
         return els.reduce((closest, el) => {
@@ -652,17 +656,27 @@
     function attachCardHandlers(card) {
         card.addEventListener('dragstart', (e) => {
             dragged = card;
-            if (e.dataTransfer) {
-                e.dataTransfer.effectAllowed = 'move';
-                try { e.dataTransfer.setData('text/plain', card.dataset.cardId || ''); } catch {}
-            }
-            requestAnimationFrame(() => card.classList.add('dragging'));
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', card.dataset.cardId || '');
+            setTimeout(() => card.classList.add('dragging'), 0);
         });
         card.addEventListener('dragend', () => {
             card.classList.remove('dragging');
+            // Commit the move
+            if (dropTarget.col) {
+                const ph = dropTarget.col.querySelector('.drop-zone-placeholder');
+                if (dropTarget.after) {
+                    dropTarget.col.insertBefore(dragged, dropTarget.after);
+                } else if (ph) {
+                    dropTarget.col.insertBefore(dragged, ph);
+                } else {
+                    dropTarget.col.appendChild(dragged);
+                }
+            }
             dragged = null;
+            dropTarget = { col: null, after: null };
+            dropLine.style.display = 'none';
             columns().forEach(c => c.classList.remove('drag-over'));
-            clearIndicators();
             refreshAll(); save();
         });
         card.addEventListener('keydown', handleCardKey);
@@ -670,26 +684,50 @@
     function attachColumnHandlers(col) {
         col.addEventListener('dragover', (e) => {
             e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
             if (!dragged) return;
             col.classList.add('drag-over');
-            clearIndicators();
-            const after = getAfterElement(col, e.clientY);
-            if (after) {
-                after.classList.add('drop-indicator-before');
-                col.insertBefore(dragged, after);
+            // Record where to insert, show drop line only
+            dropTarget.col = col;
+            dropTarget.after = getAfterElement(col, e.clientY);
+            // Position drop line
+            if (dropTarget.after) {
+                const box = dropTarget.after.getBoundingClientRect();
+                const colBox = col.getBoundingClientRect();
+                dropLine.style.display = 'block';
+                dropLine.style.position = 'fixed';
+                dropLine.style.top = (box.top - 2) + 'px';
+                dropLine.style.left = (colBox.left + 4) + 'px';
+                dropLine.style.width = (colBox.width - 8) + 'px';
             } else {
-                const ph = col.querySelector('.drop-zone-placeholder');
-                if (ph) col.insertBefore(dragged, ph);
-                else col.appendChild(dragged);
+                const lastCard = [...cardsIn(col)].filter(c => c !== dragged).pop();
+                if (lastCard) {
+                    const box = lastCard.getBoundingClientRect();
+                    const colBox = col.getBoundingClientRect();
+                    dropLine.style.display = 'block';
+                    dropLine.style.position = 'fixed';
+                    dropLine.style.top = (box.bottom + 2) + 'px';
+                    dropLine.style.left = (colBox.left + 4) + 'px';
+                    dropLine.style.width = (colBox.width - 8) + 'px';
+                } else {
+                    dropLine.style.display = 'none';
+                }
             }
         });
         col.addEventListener('dragleave', (e) => {
-            if (!col.contains(e.relatedTarget)) col.classList.remove('drag-over');
+            if (!col.contains(e.relatedTarget)) {
+                col.classList.remove('drag-over');
+                if (dropTarget.col === col) {
+                    dropTarget = { col: null, after: null };
+                    dropLine.style.display = 'none';
+                }
+            }
         });
         col.addEventListener('drop', (e) => {
             e.preventDefault();
             col.classList.remove('drag-over');
-            clearIndicators();
+            dropLine.style.display = 'none';
+            // dragend handles the actual move
         });
     }
 
