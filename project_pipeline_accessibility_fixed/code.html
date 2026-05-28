@@ -248,6 +248,81 @@
           50% { opacity: 0.6; transform: scale(0.98); }
           100% { opacity: 1; transform: scale(1); }
         }
+
+        .kanban-card.keyboard-active {
+            outline: 2px solid #ffb3ae;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 4px rgba(255, 179, 174, 0.15);
+        }
+        .kanban-card:focus-visible {
+            outline: 2px solid #ffb3ae;
+            outline-offset: 2px;
+        }
+        .kanban-card.drop-indicator-before {
+            box-shadow: 0 -3px 0 0 #ffb3ae;
+        }
+        .kanban-card.drop-indicator-after {
+            box-shadow: 0 3px 0 0 #ffb3ae;
+        }
+        .kanban-card.filtered-out {
+            display: none;
+        }
+
+        .pf-modal-backdrop {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px); z-index: 100;
+            display: none; align-items: center; justify-content: center;
+        }
+        .pf-modal-backdrop.open { display: flex; }
+        .pf-modal {
+            background: #161F2F; border: 1px solid #2A3547;
+            border-radius: 8px; padding: 24px; width: min(440px, 92vw);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .pf-modal label {
+            display: block; font-size: 12px; font-weight: 600;
+            color: #e4beba; margin-bottom: 6px; text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .pf-modal input, .pf-modal select {
+            width: 100%; background: #0B121F; border: 1px solid #2A3547;
+            color: #dce2f5; padding: 8px 10px; border-radius: 4px;
+            font-size: 14px; margin-bottom: 16px;
+        }
+        .pf-modal input:focus, .pf-modal select:focus {
+            outline: none; border-color: #ffb3ae;
+        }
+
+        .pf-toast {
+            position: fixed; bottom: 24px; left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #232a38; border: 1px solid #2A3547;
+            color: #dce2f5; padding: 10px 16px; border-radius: 6px;
+            font-size: 13px; z-index: 200; opacity: 0;
+            transition: opacity .2s, transform .2s;
+            pointer-events: none;
+        }
+        .pf-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        .filter-menu {
+            position: absolute; top: 100%; right: 0; margin-top: 8px;
+            background: #161F2F; border: 1px solid #2A3547;
+            border-radius: 6px; padding: 6px; min-width: 160px;
+            z-index: 40; display: none;
+        }
+        .filter-menu.open { display: block; }
+        .filter-menu button {
+            display: flex; align-items: center; gap: 8px; width: 100%;
+            text-align: left; padding: 8px 10px; font-size: 13px;
+            color: #dce2f5; border-radius: 4px; background: transparent;
+        }
+        .filter-menu button:hover { background: #232a38; }
+        .filter-menu button[aria-pressed="true"]::before {
+            content: "✓"; color: #ffb3ae;
+        }
+        .filter-menu button:not([aria-pressed="true"])::before {
+            content: ""; width: 12px; display: inline-block;
+        }
     </style>
 </head>
 <body class="bg-surface-container-lowest text-on-surface h-screen overflow-hidden font-body-md flex">
@@ -299,7 +374,7 @@
 <!-- Search Bar on Left -->
 <div class="flex-1 max-w-md relative">
 <span aria-label="Search" class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" role="img">search</span>
-<input class="w-full bg-[#161F2F] border border-[#2A3547] text-on-surface rounded-input py-1.5 pl-10 pr-4 focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container font-body-md text-body-md transition-colors placeholder:text-outline-variant" placeholder="Search pipeline..." type="text"/>
+<input id="pipelineSearch" class="w-full bg-[#161F2F] border border-[#2A3547] text-on-surface rounded-input py-1.5 pl-10 pr-4 focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container font-body-md text-body-md transition-colors placeholder:text-outline-variant" placeholder="Search pipeline..." type="search" aria-label="Search pipeline"/>
 </div>
 <!-- Actions -->
 <div class="flex items-center gap-4 ml-4">
@@ -325,12 +400,20 @@
 <h2 class="font-headline-lg text-headline-lg text-on-surface m-0">Q3 Product Launch</h2>
 <p class="font-body-md text-body-md mt-1 text-on-surface">Sprint 14 • 8 days remaining</p>
 </div>
-<div class="flex gap-3">
-<button aria-label="Filter tasks" class="bg-[#161F2F] border border-[#2A3547] text-on-surface px-4 py-2 rounded-input hover:border-[#3F4A5E] hover:text-primary transition-colors flex items-center gap-2">
+<div class="flex gap-3 relative">
+<div class="relative">
+<button id="filterBtn" aria-haspopup="true" aria-expanded="false" aria-label="Filter tasks by priority" class="bg-[#161F2F] border border-[#2A3547] text-on-surface px-4 py-2 rounded-input hover:border-[#3F4A5E] hover:text-primary transition-colors flex items-center gap-2">
 <span class="material-symbols-outlined text-[18px]">filter_list</span>
-<span class="font-label-md text-label-md">Filter</span>
+<span class="font-label-md text-label-md">Filter <span id="filterLabel" class="text-outline-variant">All</span></span>
 </button>
-<button aria-label="Create new task" class="bg-primary-container text-white px-4 py-2 rounded-input hover:bg-opacity-90 transition-colors font-label-md text-label-md flex items-center gap-2">
+<div id="filterMenu" class="filter-menu" role="menu">
+<button role="menuitemradio" aria-pressed="true" data-priority="all">All priorities</button>
+<button role="menuitemradio" aria-pressed="false" data-priority="High">High</button>
+<button role="menuitemradio" aria-pressed="false" data-priority="Medium">Medium</button>
+<button role="menuitemradio" aria-pressed="false" data-priority="Low">Low</button>
+</div>
+</div>
+<button id="newTaskBtn" aria-label="Create new task" class="bg-primary-container text-white px-4 py-2 rounded-input hover:bg-opacity-90 transition-colors font-label-md text-label-md flex items-center gap-2">
 <span class="material-symbols-outlined text-[18px]">add</span>
                         New Task
                     </button>
@@ -341,11 +424,11 @@
 <!-- Planning -->
 <div aria-label="Planning tasks" class="kanban-column" data-column="planning" role="region">
 <div class="flex items-center justify-between mb-3 px-1">
-<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider">Planning <span class="text-outline-variant ml-2">3</span></h3>
+<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider">Planning <span class="text-outline-variant ml-2 column-count" data-count>3</span></h3>
 <button class="text-outline hover:text-primary"><span class="material-symbols-outlined text-[18px]">more_horiz</span></button>
 </div>
 <!-- Card 1 -->
-<div class="kanban-card bg-[#161F2F] border border-[#2A3547] rounded-card p-4 hover:border-[#3F4A5E] cursor-grab transition-all duration-200 hover:-translate-y-[2px] hover:shadow-lg group" draggable="true">
+<div class="kanban-card bg-[#161F2F] border border-[#2A3547] rounded-card p-4 hover:border-[#3F4A5E] cursor-grab transition-all duration-200 hover:-translate-y-[2px] hover:shadow-lg group" draggable="true" data-card-id="card-1" tabindex="0" role="article" aria-roledescription="Draggable task card">
 <div class="flex justify-between items-start mb-2">
 <span class="inline-block px-2 py-0.5 rounded-full bg-error-container/20 border border-error-container/30 text-error text-[10px] font-semibold uppercase tracking-wide">High</span>
 <span class="material-symbols-outlined text-outline-variant text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">drag_indicator</span>
@@ -365,11 +448,11 @@
 <!-- In Progress -->
 <div aria-label="In-progress tasks" class="kanban-column" data-column="in-progress" role="region">
 <div class="flex items-center justify-between mb-3 px-1">
-<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider">In Progress <span class="text-outline-variant ml-2">2</span></h3>
+<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider">In Progress <span class="text-outline-variant ml-2 column-count" data-count>2</span></h3>
 <button class="text-outline hover:text-primary"><span class="material-symbols-outlined text-[18px]">more_horiz</span></button>
 </div>
 <!-- Card 2 (Visual Rot) -->
-<div class="kanban-card bg-[#161F2F] border border-[#2A3547] rounded-card p-4 hover:border-[#3F4A5E] cursor-grab transition-all duration-200 hover:-translate-y-[2px] hover:shadow-lg group relative overflow-hidden" draggable="true">
+<div class="kanban-card bg-[#161F2F] border border-[#2A3547] rounded-card p-4 hover:border-[#3F4A5E] cursor-grab transition-all duration-200 hover:-translate-y-[2px] hover:shadow-lg group relative overflow-hidden" draggable="true" data-card-id="card-2" tabindex="0" role="article" aria-roledescription="Draggable task card">
 <div class="absolute top-0 right-0 w-1 h-full bg-[#FFC107] opacity-20"></div>
 <div class="flex justify-between items-start mb-2">
 <div class="flex gap-2 items-center">
@@ -409,11 +492,11 @@
 <!-- Testing -->
 <div aria-label="Tasks in testing" class="kanban-column" data-column="testing" role="region">
 <div class="flex items-center justify-between mb-3 px-1">
-<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider">Testing <span class="text-outline-variant ml-2">1</span></h3>
+<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider">Testing <span class="text-outline-variant ml-2 column-count" data-count>1</span></h3>
 <button class="text-outline hover:text-primary"><span class="material-symbols-outlined text-[18px]">more_horiz</span></button>
 </div>
 <!-- Card 3 -->
-<div class="kanban-card bg-[#161F2F] border border-[#2A3547] rounded-card p-4 hover:border-[#3F4A5E] cursor-grab transition-all duration-200 hover:-translate-y-[2px] hover:shadow-lg group" draggable="true">
+<div class="kanban-card bg-[#161F2F] border border-[#2A3547] rounded-card p-4 hover:border-[#3F4A5E] cursor-grab transition-all duration-200 hover:-translate-y-[2px] hover:shadow-lg group" draggable="true" data-card-id="card-3" tabindex="0" role="article" aria-roledescription="Draggable task card">
 <div class="flex justify-between items-start mb-2">
 <span class="inline-block px-2 py-0.5 rounded-full bg-secondary-container/20 border border-secondary-container/30 text-secondary text-[10px] font-semibold uppercase tracking-wide">Low</span>
 <span class="material-symbols-outlined text-outline-variant text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">drag_indicator</span>
@@ -433,7 +516,7 @@
 <!-- Ready to Deploy -->
 <div aria-label="Tasks ready to deploy" class="kanban-column" data-column="ready" role="region">
 <div class="flex items-center justify-between mb-3 px-1">
-<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider">Ready to Deploy <span class="text-outline-variant ml-2">0</span></h3>
+<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider">Ready to Deploy <span class="text-outline-variant ml-2 column-count" data-count>0</span></h3>
 <button class="text-outline hover:text-primary"><span class="material-symbols-outlined text-[18px]">more_horiz</span></button>
 </div>
 <div class="h-full border-2 border-dashed border-[#2A3547] rounded-card flex items-center justify-center bg-transparent drop-zone-placeholder">
@@ -443,11 +526,11 @@
 <!-- Completed -->
 <div aria-label="Completed tasks" class="kanban-column" data-column="completed" role="region">
 <div class="flex items-center justify-between mb-3 px-1">
-<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider opacity-60">Completed <span class="text-outline-variant ml-2">1</span></h3>
+<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider opacity-60">Completed <span class="text-outline-variant ml-2 column-count" data-count>1</span></h3>
 <button class="text-outline hover:text-primary"><span class="material-symbols-outlined text-[18px]">more_horiz</span></button>
 </div>
 <!-- Card 4 (Completed) -->
-<div class="kanban-card bg-[#161F2F]/50 border border-[#2A3547]/50 rounded-card p-4 opacity-70 group hover:shadow-lg transition-all duration-200 hover:-translate-y-[2px]" draggable="true">
+<div class="kanban-card bg-[#161F2F]/50 border border-[#2A3547]/50 rounded-card p-4 opacity-70 group hover:shadow-lg transition-all duration-200 hover:-translate-y-[2px]" draggable="true" data-card-id="card-4" tabindex="0" role="article" aria-roledescription="Draggable task card">
 <div class="flex justify-between items-start mb-2">
 <span class="inline-block px-2 py-0.5 rounded-full bg-outline-variant/20 border border-outline-variant/30 text-outline text-[10px] font-semibold uppercase tracking-wide">Medium</span>
 </div>
@@ -466,53 +549,302 @@
 </div>
 </main>
 </div>
+<div id="newTaskModal" class="pf-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="newTaskTitle">
+<form id="newTaskForm" class="pf-modal">
+<h3 id="newTaskTitle" style="margin:0 0 16px;font-size:18px;font-weight:600;color:#dce2f5;">New Task</h3>
+<label for="ntTitle">Title</label>
+<input id="ntTitle" type="text" required maxlength="120" placeholder="What needs doing?"/>
+<label for="ntPriority">Priority</label>
+<select id="ntPriority">
+<option value="High">High</option>
+<option value="Medium" selected>Medium</option>
+<option value="Low">Low</option>
+</select>
+<label for="ntColumn">Column</label>
+<select id="ntColumn">
+<option value="planning">Planning</option>
+<option value="in-progress">In Progress</option>
+<option value="testing">Testing</option>
+<option value="ready">Ready to Deploy</option>
+<option value="completed">Completed</option>
+</select>
+<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;">
+<button type="button" id="ntCancel" style="background:transparent;border:1px solid #2A3547;color:#dce2f5;padding:8px 14px;border-radius:4px;font-size:13px;">Cancel</button>
+<button type="submit" style="background:#ff5352;border:0;color:#fff;padding:8px 14px;border-radius:4px;font-size:13px;font-weight:600;">Create</button>
+</div>
+</form>
+</div>
+<div id="pfToast" class="pf-toast" role="status" aria-live="polite"></div>
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const cards = document.querySelectorAll('.kanban-card');
-        const columns = document.querySelectorAll('.kanban-column');
-        let draggedCard = null;
+(() => {
+    const STORAGE_KEY = 'projectflow:pipeline:v1';
+    const PRIORITY_BADGE = {
+        High:   { cls: 'bg-error-container/20 border border-error-container/30 text-error',             label: 'High' },
+        Medium: { cls: 'bg-tertiary-container/20 border border-tertiary-container/30 text-tertiary',    label: 'Medium' },
+        Low:    { cls: 'bg-secondary-container/20 border border-secondary-container/30 text-secondary', label: 'Low' },
+    };
 
-        cards.forEach(card => {
-            card.addEventListener('dragstart', (e) => {
-                draggedCard = card;
-                setTimeout(() => {
-                    card.classList.add('dragging');
-                }, 0);
-            });
+    const board = document.querySelector('.kanban-board');
+    const columns = () => board.querySelectorAll('.kanban-column');
+    const cardsIn = (col) => col.querySelectorAll('.kanban-card');
 
-            card.addEventListener('dragend', () => {
-                draggedCard.classList.remove('dragging');
-                draggedCard = null;
-                columns.forEach(col => col.classList.remove('drag-over'));
+    document.querySelectorAll('.kanban-card').forEach(card => {
+        const badge = card.querySelector('span.inline-block');
+        const txt = (badge?.textContent || '').trim();
+        if (PRIORITY_BADGE[txt]) card.dataset.priority = txt;
+    });
+
+    function refreshColumn(col) {
+        const visible = [...cardsIn(col)].filter(c => !c.classList.contains('filtered-out'));
+        const countEl = col.querySelector('[data-count]');
+        if (countEl) countEl.textContent = visible.length;
+
+        const ph = col.querySelector('.drop-zone-placeholder');
+        const hasCards = cardsIn(col).length > 0;
+        if (hasCards && ph) ph.remove();
+        if (!hasCards && !ph) {
+            const empty = document.createElement('div');
+            empty.className = 'h-full border-2 border-dashed border-[#2A3547] rounded-card flex items-center justify-center bg-transparent drop-zone-placeholder';
+            empty.innerHTML = '<span class="font-label-md text-label-md text-on-surface">Drop cards here</span>';
+            col.appendChild(empty);
+        }
+    }
+    function refreshAll() { columns().forEach(refreshColumn); }
+
+    function save() {
+        const state = {};
+        columns().forEach(col => {
+            state[col.dataset.column] = [...cardsIn(col)].map(c => c.dataset.cardId);
+        });
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+    }
+    function restore() {
+        let state;
+        try { state = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch {}
+        if (!state) return;
+        const byId = new Map();
+        document.querySelectorAll('.kanban-card').forEach(c => byId.set(c.dataset.cardId, c));
+        Object.entries(state).forEach(([colName, ids]) => {
+            const col = board.querySelector(`[data-column="${colName}"]`);
+            if (!col) return;
+            ids.forEach(id => {
+                const card = byId.get(id);
+                if (card) col.appendChild(card);
             });
         });
+    }
 
-        columns.forEach(column => {
-            column.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                column.classList.add('drag-over');
-            });
+    let dragged = null;
+    function clearIndicators() {
+        document.querySelectorAll('.drop-indicator-before, .drop-indicator-after')
+            .forEach(el => el.classList.remove('drop-indicator-before', 'drop-indicator-after'));
+    }
+    function getAfterElement(col, y) {
+        const els = [...cardsIn(col)].filter(c => c !== dragged);
+        return els.reduce((closest, el) => {
+            const box = el.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) return { offset, el };
+            return closest;
+        }, { offset: -Infinity, el: null }).el;
+    }
+    function attachCardHandlers(card) {
+        card.addEventListener('dragstart', () => {
+            dragged = card;
+            requestAnimationFrame(() => card.classList.add('dragging'));
+        });
+        card.addEventListener('dragend', () => {
+            card.classList.remove('dragging');
+            dragged = null;
+            columns().forEach(c => c.classList.remove('drag-over'));
+            clearIndicators();
+            refreshAll(); save();
+        });
+        card.addEventListener('keydown', handleCardKey);
+    }
+    function attachColumnHandlers(col) {
+        col.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            if (!dragged) return;
+            col.classList.add('drag-over');
+            clearIndicators();
+            const after = getAfterElement(col, e.clientY);
+            if (after) {
+                after.classList.add('drop-indicator-before');
+                col.insertBefore(dragged, after);
+            } else {
+                const ph = col.querySelector('.drop-zone-placeholder');
+                if (ph) col.insertBefore(dragged, ph);
+                else col.appendChild(dragged);
+            }
+        });
+        col.addEventListener('dragleave', (e) => {
+            if (!col.contains(e.relatedTarget)) col.classList.remove('drag-over');
+        });
+        col.addEventListener('drop', (e) => {
+            e.preventDefault();
+            col.classList.remove('drag-over');
+            clearIndicators();
+        });
+    }
 
-            column.addEventListener('dragleave', () => {
-                column.classList.remove('drag-over');
-            });
+    let keyboardCard = null;
+    function setKeyboardActive(card) {
+        document.querySelectorAll('.keyboard-active').forEach(c => c.classList.remove('keyboard-active'));
+        keyboardCard = card;
+        if (card) card.classList.add('keyboard-active');
+    }
+    function moveCard(card, dir) {
+        const col = card.closest('.kanban-column');
+        if (!col) return;
+        const cols = [...columns()];
+        const colIdx = cols.indexOf(col);
+        if (dir === 'left' || dir === 'right') {
+            const target = cols[colIdx + (dir === 'left' ? -1 : 1)];
+            if (!target) return;
+            const ph = target.querySelector('.drop-zone-placeholder');
+            if (ph) target.insertBefore(card, ph); else target.appendChild(card);
+        } else {
+            const siblings = [...cardsIn(col)];
+            const idx = siblings.indexOf(card);
+            if (dir === 'up' && idx > 0) col.insertBefore(card, siblings[idx - 1]);
+            if (dir === 'down' && idx < siblings.length - 1) {
+                const next = siblings[idx + 1];
+                col.insertBefore(card, next.nextSibling);
+            }
+        }
+        card.focus();
+        refreshAll(); save();
+    }
+    function handleCardKey(e) {
+        const card = e.currentTarget;
+        if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault();
+            setKeyboardActive(keyboardCard === card ? null : card);
+            toast(keyboardCard ? 'Arrow keys to move. Enter or Esc to drop.' : 'Card released.');
+            return;
+        }
+        if (e.key === 'Escape') { setKeyboardActive(null); return; }
+        if (!keyboardCard || keyboardCard !== card) return;
+        const map = { ArrowLeft: 'left', ArrowRight: 'right', ArrowUp: 'up', ArrowDown: 'down' };
+        if (map[e.key]) { e.preventDefault(); moveCard(card, map[e.key]); }
+    }
 
-            column.addEventListener('drop', (e) => {
-                e.preventDefault();
-                column.classList.remove('drag-over');
-                
-                if (draggedCard) {
-                    // Simple append for demonstration.  In a real app, you'd insert relative to other cards.
-                    const dropZonePlaceholder = column.querySelector('.drop-zone-placeholder');
-                    if(dropZonePlaceholder) {
-                        column.insertBefore(draggedCard, dropZonePlaceholder);
-                    } else {
-                        column.appendChild(draggedCard);
-                    }
-                }
-            });
+    let activePriority = 'all';
+    let activeQuery = '';
+    function applyFilters() {
+        document.querySelectorAll('.kanban-card').forEach(card => {
+            const title = (card.querySelector('h4')?.textContent || '').toLowerCase();
+            const priorityOk = activePriority === 'all' || card.dataset.priority === activePriority;
+            const queryOk = !activeQuery || title.includes(activeQuery);
+            card.classList.toggle('filtered-out', !(priorityOk && queryOk));
+        });
+        refreshAll();
+    }
+
+    document.getElementById('pipelineSearch').addEventListener('input', (e) => {
+        activeQuery = e.target.value.trim().toLowerCase();
+        applyFilters();
+    });
+
+    const filterBtn = document.getElementById('filterBtn');
+    const filterMenu = document.getElementById('filterMenu');
+    const filterLabel = document.getElementById('filterLabel');
+    filterBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const open = filterMenu.classList.toggle('open');
+        filterBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    document.addEventListener('click', (e) => {
+        if (!filterMenu.contains(e.target) && !filterBtn.contains(e.target)) {
+            filterMenu.classList.remove('open');
+            filterBtn.setAttribute('aria-expanded', 'false');
+        }
+    });
+    filterMenu.querySelectorAll('button[data-priority]').forEach(b => {
+        b.addEventListener('click', () => {
+            activePriority = b.dataset.priority;
+            filterMenu.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+            filterLabel.textContent = activePriority === 'all' ? 'All' : activePriority;
+            filterMenu.classList.remove('open');
+            filterBtn.setAttribute('aria-expanded', 'false');
+            applyFilters();
         });
     });
+
+    const modal = document.getElementById('newTaskModal');
+    const form = document.getElementById('newTaskForm');
+    function openModal() {
+        modal.classList.add('open');
+        document.getElementById('ntTitle').focus();
+    }
+    function closeModal() {
+        modal.classList.remove('open');
+        form.reset();
+    }
+    document.getElementById('newTaskBtn').addEventListener('click', openModal);
+    document.getElementById('ntCancel').addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+    });
+
+    function createCard({ title, priority }) {
+        const card = document.createElement('div');
+        card.className = 'kanban-card bg-[#161F2F] border border-[#2A3547] rounded-card p-4 hover:border-[#3F4A5E] cursor-grab transition-all duration-200 hover:-translate-y-[2px] hover:shadow-lg group';
+        card.setAttribute('draggable', 'true');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('role', 'article');
+        card.dataset.cardId = 'card-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7);
+        card.dataset.priority = priority;
+        const badge = PRIORITY_BADGE[priority];
+        card.innerHTML = `
+            <div class="flex justify-between items-start mb-2">
+                <span class="inline-block px-2 py-0.5 rounded-full ${badge.cls} text-[10px] font-semibold uppercase tracking-wide">${badge.label}</span>
+                <span class="material-symbols-outlined text-outline-variant text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">drag_indicator</span>
+            </div>
+            <h4 class="font-body-md text-body-md text-on-surface mb-3 leading-snug font-medium"></h4>
+            <div class="flex items-center justify-between mt-auto pt-2 border-t border-[#2A3547]/50">
+                <div class="flex -space-x-2"></div>
+                <div class="flex items-center gap-2 text-outline-variant">
+                    <span class="material-symbols-outlined text-[14px]">schedule</span>
+                    <span class="text-[12px]">just now</span>
+                </div>
+            </div>`;
+        card.querySelector('h4').textContent = title;
+        attachCardHandlers(card);
+        return card;
+    }
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = document.getElementById('ntTitle').value.trim();
+        const priority = document.getElementById('ntPriority').value;
+        const colName = document.getElementById('ntColumn').value;
+        if (!title) return;
+        const col = board.querySelector(`[data-column="${colName}"]`);
+        const card = createCard({ title, priority });
+        const ph = col.querySelector('.drop-zone-placeholder');
+        if (ph) col.insertBefore(card, ph); else col.appendChild(card);
+        closeModal();
+        refreshAll(); save();
+        toast('Task added');
+    });
+
+    const toastEl = document.getElementById('pfToast');
+    let toastTimer;
+    function toast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2200);
+    }
+
+    document.querySelectorAll('.kanban-card').forEach(attachCardHandlers);
+    columns().forEach(attachColumnHandlers);
+    restore();
+    refreshAll();
+})();
 </script>
 <!-- ProjectFlow Hub Navigation -->
 <a href="../" style="position:fixed;top:12px;right:12px;z-index:9999;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:rgba(12,19,32,0.92);border:1px solid rgba(255,179,174,0.3);color:#ffb3ae;font-family:Inter,system-ui,sans-serif;font-size:12px;font-weight:700;text-decoration:none;backdrop-filter:blur(8px);transition:border-color .2s,background .2s;">&larr; Hub</a>
