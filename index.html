@@ -3821,6 +3821,7 @@
         document.getElementById("m-stat").innerHTML =
           renderStatBadge("inprogress");
         document.getElementById("btn-mark-inprogress").style.display = "none";
+        saveTasks();
         showt("Task moved to In Progress");
       }
       function closeT() {
@@ -3917,6 +3918,7 @@
               dstCount.textContent = parseInt(dstCount.textContent || "0") + 1;
             _lastDragCard = null;
             _lastDragSrcCol = null;
+            saveTasks();
           });
         });
       }
@@ -3975,6 +3977,7 @@
         // Clear form
         document.getElementById("nt-name").value = "";
         document.getElementById("nt-desc").value = "";
+        saveTasks();
         closeNT();
         showt(
           `"${name}" added to ${priorityLabel.replace(/P[123] /, "")} queue`,
@@ -4277,9 +4280,87 @@
         showt("Login credentials updated");
       }
 
+      // ── Task Persistence ─────────────────────────────────
+      const TASKS_KEY = "pf_tasks";
+      function saveTasks() {
+        const cols = ["planning", "inprogress", "testing", "deploy"];
+        const data = {};
+        cols.forEach((colId) => {
+          const zone = document.getElementById("col-cards-" + colId);
+          if (!zone) return;
+          data[colId] = Array.from(zone.querySelectorAll(".task-card")).map(
+            (card) => ({
+              name: card.querySelector("[data-task-name]")?.textContent || "",
+              desc: card.querySelector("[data-task-desc]")?.textContent || "",
+              pri: card.querySelector("[data-task-pri]")?.textContent || "",
+              who: card.querySelector("[data-task-who]")?.textContent || "",
+              priColor:
+                card.querySelector("[data-task-pri]")?.style.color || "#f59e0b",
+              priBg:
+                card.querySelector("[data-task-pri]")?.style.background || "",
+            }),
+          );
+        });
+        localStorage.setItem(TASKS_KEY, JSON.stringify(data));
+      }
+      function createCardEl(t, colId) {
+        const priColors = {
+          High: "#ff5352",
+          Medium: "#f59e0b",
+          Low: "#6366f1",
+        };
+        const color = priColors[t.pri] || t.priColor || "#f59e0b";
+        const initials =
+          !t.who || t.who === "Unassigned"
+            ? "?"
+            : t.who
+                .split(" ")
+                .slice(0, 2)
+                .map((w) => w[0])
+                .join("")
+                .toUpperCase();
+        const card = document.createElement("div");
+        card.className = "task-card";
+        card.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+            <div data-task-name style="font-size:13px;font-weight:600;color:#dce2f5;line-height:1.4;flex:1">${t.name}</div>
+            <span data-task-pri style="display:inline-block;border-radius:4px;padding:2px 7px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;background:${color}22;color:${color};border:1px solid ${color}44;margin-left:8px;flex-shrink:0">${t.pri}</span>
+          </div>
+          ${t.desc ? `<div data-task-desc style="font-size:12px;color:#4a5568;margin-bottom:8px;line-height:1.4">${t.desc}</div>` : ""}
+          <div style="display:flex;align-items:center;gap:6px;margin-top:4px">
+            <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#ff5352,#ba1724);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">${initials}</div>
+            <span data-task-who style="font-size:11px;color:#4a5568">${t.who}</span>
+          </div>`;
+        card.dataset.col = colId;
+        card.onclick = () => openT(card, card.dataset.col);
+        makeDraggable(card, colId);
+        return card;
+      }
+      function loadTasks() {
+        const raw = localStorage.getItem(TASKS_KEY);
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        const cols = ["planning", "inprogress", "testing", "deploy"];
+        cols.forEach((colId) => {
+          const tasks = data[colId];
+          if (!tasks || !tasks.length) return;
+          const zone = document.getElementById("col-cards-" + colId);
+          const countEl = document.getElementById("col-count-" + colId);
+          if (!zone) return;
+          // Clear placeholder
+          zone.innerHTML = "";
+          tasks.forEach((t) => {
+            const card = createCardEl(t, colId);
+            zone.appendChild(card);
+          });
+          if (countEl) countEl.textContent = tasks.length;
+        });
+      }
+
       // Force login on every page load
       document.addEventListener("DOMContentLoaded", function () {
         initDropZones();
+        loadTasks();
         // Ensure pipeline is the active view
         document
           .querySelectorAll(".view")
