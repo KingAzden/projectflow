@@ -5,8 +5,10 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Project Settings - ProjectFlow</title>
 <!-- Material Symbols -->
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
 <!-- Tailwind CSS -->
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -183,22 +185,22 @@
 </div>
 </div>
 <!-- Tabs -->
-<div class="border-b border-outline-variant flex gap-8 mb-4">
-<button class="pb-3 border-b-2 border-primary-container text-primary-container font-label-md text-label-md transition-colors flex items-center gap-2" id="tab-btn-general" onclick="switchTab('general')">
-<span class="material-symbols-outlined text-[18px]">tune</span>
+<div class="border-b border-outline-variant flex gap-8 mb-4" role="tablist" aria-label="Settings sections">
+<button class="pb-3 border-b-2 border-primary-container text-primary-container font-label-md text-label-md transition-colors flex items-center gap-2" id="tab-btn-general" role="tab" aria-selected="true" aria-controls="tab-general" data-tab="general">
+<span class="material-symbols-outlined text-[18px]" aria-hidden="true">tune</span>
                     General
                 </button>
-<button class="pb-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors flex items-center gap-2" id="tab-btn-workflow" onclick="switchTab('workflow')">
-<span class="material-symbols-outlined text-[18px]">account_tree</span>
+<button class="pb-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors flex items-center gap-2" id="tab-btn-workflow" role="tab" aria-selected="false" aria-controls="tab-workflow" data-tab="workflow">
+<span class="material-symbols-outlined text-[18px]" aria-hidden="true">account_tree</span>
                     Workflow
                 </button>
-<button class="pb-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors flex items-center gap-2" id="tab-btn-advanced" onclick="switchTab('advanced')">
-<span class="material-symbols-outlined text-[18px]">api</span>
+<button class="pb-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors flex items-center gap-2" id="tab-btn-advanced" role="tab" aria-selected="false" aria-controls="tab-advanced" data-tab="advanced">
+<span class="material-symbols-outlined text-[18px]" aria-hidden="true">api</span>
                     Advanced
                 </button>
 </div>
 <!-- Tab Content: General -->
-<div class="flex flex-col gap-6 animate-[fadeIn_0.3s_ease-out]" id="tab-general">
+<div class="flex flex-col gap-6 animate-[fadeIn_0.3s_ease-out]" id="tab-general" role="tabpanel" aria-labelledby="tab-btn-general">
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 <!-- Left Column: Identity -->
 <div class="lg:col-span-2 flex flex-col gap-6">
@@ -262,7 +264,7 @@
 </div>
 </div>
 <!-- Tab Content: Workflow (Hidden by default) -->
-<div class="hidden flex-col gap-6" id="tab-workflow">
+<div class="hidden flex-col gap-6" id="tab-workflow" role="tabpanel" aria-labelledby="tab-btn-workflow">
 <!-- Visual Rot Settings -->
 <div class="bg-surface border border-surface-container-highest rounded-xl p-6 shadow-sm">
 <div class="flex items-center justify-between border-b border-outline-variant pb-3 mb-6">
@@ -318,7 +320,7 @@
 </div>
 </div>
 <!-- Tab Content: Advanced (Hidden by default) -->
-<div class="hidden flex-col gap-6" id="tab-advanced">
+<div class="hidden flex-col gap-6" id="tab-advanced" role="tabpanel" aria-labelledby="tab-btn-advanced">
 <!-- Danger Zone -->
 <div class="bg-surface border border-error/20 rounded-xl p-6 shadow-sm relative overflow-hidden">
 <div class="absolute top-0 left-0 w-1 h-full bg-primary-container"></div>
@@ -344,45 +346,63 @@
 </div>
 </div>
 </main>
-<!-- Simple Tab Switching Logic -->
+<!-- Tab Switching Logic -->
 <script>
+    (function () {
+        const TAB_IDS = ['general', 'workflow', 'advanced'];
+
         function switchTab(tabId) {
-            // Hide all tabs
-            document.getElementById('tab-general').classList.add('hidden');
-            document.getElementById('tab-general').classList.remove('flex');
-            document.getElementById('tab-workflow').classList.add('hidden');
-            document.getElementById('tab-workflow').classList.remove('flex');
-            document.getElementById('tab-advanced').classList.add('hidden');
-            document.getElementById('tab-advanced').classList.remove('flex');
-            
-            // Reset all buttons
-            const btns = ['general', 'workflow', 'advanced'];
-            btns.forEach(id => {
+            TAB_IDS.forEach(id => {
+                const panel = document.getElementById(`tab-${id}`);
                 const btn = document.getElementById(`tab-btn-${id}`);
-                btn.classList.remove('border-primary-container', 'text-primary-container');
-                btn.classList.add('border-transparent', 'text-on-surface-variant');
+                const isActive = id === tabId;
+
+                panel.classList.toggle('hidden', !isActive);
+                panel.classList.toggle('flex', isActive);
+                if (isActive) panel.classList.add('animate-[fadeIn_0.3s_ease-out]');
+
+                btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+                btn.classList.toggle('border-primary-container', isActive);
+                btn.classList.toggle('text-primary-container', isActive);
+                btn.classList.toggle('border-transparent', !isActive);
+                btn.classList.toggle('text-on-surface-variant', !isActive);
             });
-
-            // Show active tab
-            const activeContent = document.getElementById(`tab-${tabId}`);
-            activeContent.classList.remove('hidden');
-            activeContent.classList.add('flex', 'animate-[fadeIn_0.3s_ease-out]');
-
-            // Update active button
-            const activeBtn = document.getElementById(`tab-btn-${tabId}`);
-            activeBtn.classList.remove('border-transparent', 'text-on-surface-variant');
-            activeBtn.classList.add('border-primary-container', 'text-primary-container');
         }
 
-        // Custom Tailwind animations for smooth transitions
+        // Wire up buttons via event delegation (no inline handlers)
+        document.querySelector('[role="tablist"]').addEventListener('click', e => {
+            const btn = e.target.closest('[data-tab]');
+            if (btn) switchTab(btn.dataset.tab);
+        });
+
+        // Arrow-key keyboard navigation for tabs (ARIA pattern)
+        document.querySelector('[role="tablist"]').addEventListener('keydown', e => {
+            const tabs = TAB_IDS.map(id => document.getElementById(`tab-btn-${id}`));
+            const idx = tabs.indexOf(document.activeElement);
+            if (idx === -1) return;
+            if (e.key === 'ArrowRight') {
+                const next = tabs[(idx + 1) % tabs.length];
+                next.focus();
+                switchTab(next.dataset.tab);
+                e.preventDefault();
+            } else if (e.key === 'ArrowLeft') {
+                const prev = tabs[(idx - 1 + tabs.length) % tabs.length];
+                prev.focus();
+                switchTab(prev.dataset.tab);
+                e.preventDefault();
+            }
+        });
+
+        // Custom Tailwind animation for smooth transitions
         tailwind.config.theme.extend.keyframes = {
             ...tailwind.config.theme.extend.keyframes,
             fadeIn: {
                 '0%': { opacity: '0', transform: 'translateY(10px)' },
                 '100%': { opacity: '1', transform: 'translateY(0)' },
             }
-        }
-    </script>
+        };
+    }());
+</script>
 <!-- ProjectFlow Hub Navigation -->
 <a href="../" style="position:fixed;top:12px;right:12px;z-index:9999;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:rgba(12,19,32,0.92);border:1px solid rgba(255,179,174,0.3);color:#ffb3ae;font-family:Inter,system-ui,sans-serif;font-size:12px;font-weight:700;text-decoration:none;backdrop-filter:blur(8px);transition:border-color .2s,background .2s;">&larr; Hub</a>
 </body></html>
