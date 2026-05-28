@@ -4055,15 +4055,15 @@
       
       function updateAuthUI() {
         if (isLoggedIn) {
-          document.getElementById("btn-logout").style.display = "block";
+          document.getElementById("btn-logout").style.display = "flex";
           document.getElementById("btn-login").style.display = "none";
-          document.getElementById("dd-view-profile").style.display = "block";
-          document.getElementById("dd-account-settings").style.display = "block";
+          document.getElementById("dd-view-profile").style.display = "flex";
+          document.getElementById("dd-account-settings").style.display = "flex";
           document.getElementById("dd-profile-sep").style.display = "block";
           document.getElementById("topbar-name").textContent = document.getElementById("pf-first").value.trim() || "You";
         } else {
           document.getElementById("btn-logout").style.display = "none";
-          document.getElementById("btn-login").style.display = "block";
+          document.getElementById("btn-login").style.display = "flex";
           document.getElementById("dd-view-profile").style.display = "none";
           document.getElementById("dd-account-settings").style.display = "none";
           document.getElementById("dd-profile-sep").style.display = "none";
