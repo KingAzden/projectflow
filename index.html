@@ -250,13 +250,55 @@
       border-radius: 8px;
       background: rgba(25, 32, 45, 0.92);
       box-shadow: 0 18px 42px rgba(0, 0, 0, 0.2);
-      transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+      transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
+      cursor: grab;
+      user-select: none;
     }
 
     .screen-card:hover {
       border-color: rgba(255, 179, 174, 0.62);
       box-shadow: 0 22px 54px rgba(0, 0, 0, 0.31), 0 0 20px rgba(255, 83, 82, 0.10);
       transform: translateY(-2px);
+    }
+
+    .screen-card:active {
+      cursor: grabbing;
+    }
+
+    .screen-card.dragging {
+      opacity: 0.38;
+      transform: scale(0.97);
+      box-shadow: none;
+      cursor: grabbing;
+    }
+
+    .screen-card.drag-over {
+      border-color: var(--primary-strong);
+      box-shadow: 0 0 0 2px var(--primary-strong), 0 22px 54px rgba(0, 0, 0, 0.31);
+      transform: translateY(-2px);
+    }
+
+    .drag-handle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 6px 0 2px;
+      opacity: 0;
+      transition: opacity 160ms ease;
+      pointer-events: none;
+    }
+
+    .drag-handle span {
+      display: block;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--outline);
+    }
+
+    .screen-card:hover .drag-handle {
+      opacity: 1;
     }
 
     .preview {
@@ -486,8 +528,9 @@
           </p>
         </div>
 
-        <div class="screen-grid">
-          <article class="screen-card">
+        <div class="screen-grid" id="screen-grid">
+          <article class="screen-card" draggable="true" data-id="project_pipeline_accessibility_fixed">
+            <div class="drag-handle" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
             <div class="preview">
               <img src="project_pipeline_accessibility_fixed/screen.png" alt="Desktop project pipeline board preview" loading="lazy" />
             </div>
@@ -502,7 +545,8 @@
             </div>
           </article>
 
-          <article class="screen-card">
+          <article class="screen-card" draggable="true" data-id="project_pipeline_mobile">
+            <div class="drag-handle" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
             <div class="preview mobile">
               <img src="project_pipeline_mobile/screen.png" alt="Mobile project pipeline preview" loading="lazy" />
             </div>
@@ -517,7 +561,8 @@
             </div>
           </article>
 
-          <article class="screen-card">
+          <article class="screen-card" draggable="true" data-id="project_list_view_accessibility_fixed">
+            <div class="drag-handle" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
             <div class="preview">
               <img src="project_list_view_accessibility_fixed/screen.png" alt="Power-user task list view preview" loading="lazy" />
             </div>
@@ -532,7 +577,8 @@
             </div>
           </article>
 
-          <article class="screen-card">
+          <article class="screen-card" draggable="true" data-id="task_detail_drawer_accessibility_fixed">
+            <div class="drag-handle" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
             <div class="preview">
               <img src="task_detail_drawer_accessibility_fixed/screen.png" alt="Task detail drawer preview" loading="lazy" />
             </div>
@@ -547,7 +593,8 @@
             </div>
           </article>
 
-          <article class="screen-card">
+          <article class="screen-card" draggable="true" data-id="project_settings">
+            <div class="drag-handle" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
             <div class="preview">
               <img src="project_settings/screen.png" alt="Project settings preview" loading="lazy" />
             </div>
@@ -562,7 +609,8 @@
             </div>
           </article>
 
-          <article class="screen-card">
+          <article class="screen-card" draggable="true" data-id="team_management">
+            <div class="drag-handle" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
             <div class="preview">
               <img src="team_management/screen.png" alt="Team management screen preview" loading="lazy" />
             </div>
@@ -577,7 +625,8 @@
             </div>
           </article>
 
-          <article class="screen-card">
+          <article class="screen-card" draggable="true" data-id="team_insights_dashboard_accessibility_fixed">
+            <div class="drag-handle" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
             <div class="preview">
               <img src="team_insights_dashboard_accessibility_fixed/screen.png" alt="Team insights dashboard preview" loading="lazy" />
             </div>
@@ -592,7 +641,8 @@
             </div>
           </article>
 
-          <article class="screen-card">
+          <article class="screen-card" draggable="true" data-id="team_insights_dashboard_mobile">
+            <div class="drag-handle" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
             <div class="preview mobile">
               <img src="team_insights_dashboard_mobile/screen.png" alt="Mobile team insights dashboard preview" loading="lazy" />
             </div>
@@ -607,7 +657,8 @@
             </div>
           </article>
 
-          <article class="screen-card">
+          <article class="screen-card" draggable="true" data-id="onboarding_empty_pipeline_state">
+            <div class="drag-handle" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
             <div class="preview">
               <img src="onboarding_empty_pipeline_state/screen.png" alt="Onboarding empty pipeline state preview" loading="lazy" />
             </div>
@@ -622,7 +673,8 @@
             </div>
           </article>
 
-          <article class="screen-card">
+          <article class="screen-card" draggable="true" data-id="email_task_assignment_notification">
+            <div class="drag-handle" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
             <div class="preview">
               <img src="email_task_assignment_notification/screen.png" alt="Task assignment email notification preview" loading="lazy" />
             </div>
@@ -637,7 +689,8 @@
             </div>
           </article>
 
-          <article class="screen-card">
+          <article class="screen-card" draggable="true" data-id="email_visual_rot_alert">
+            <div class="drag-handle" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
             <div class="preview">
               <img src="email_visual_rot_alert/screen.png" alt="Visual rot alert email preview" loading="lazy" />
             </div>
@@ -660,5 +713,106 @@
       <span><a href="gallery.html">Screen Gallery</a> &middot; <a href="kinetic_noir/DESIGN.md">Design Guidance</a></span>
     </footer>
   </div>
+  <script>
+    (function () {
+      const STORAGE_KEY = 'pf-card-order';
+      const grid = document.getElementById('screen-grid');
+
+      // --- Restore saved order ---
+      function restoreOrder() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (!saved) return;
+        let order;
+        try { order = JSON.parse(saved); } catch { return; }
+        if (!Array.isArray(order)) return;
+        order.forEach(function (id) {
+          const card = grid.querySelector('[data-id="' + id + '"]');
+          if (card) grid.appendChild(card);
+        });
+      }
+
+      // --- Save current order ---
+      function saveOrder() {
+        const ids = Array.from(grid.querySelectorAll('.screen-card')).map(function (c) {
+          return c.dataset.id;
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
+      }
+
+      // --- Drag state ---
+      let dragged = null;
+
+      function onDragStart(e) {
+        dragged = this;
+        // Use a short delay so the browser snapshot is taken before the class is applied
+        requestAnimationFrame(function () {
+          dragged.classList.add('dragging');
+        });
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', this.dataset.id);
+      }
+
+      function onDragEnd() {
+        if (dragged) dragged.classList.remove('dragging');
+        grid.querySelectorAll('.screen-card').forEach(function (c) {
+          c.classList.remove('drag-over');
+        });
+        dragged = null;
+        saveOrder();
+      }
+
+      function onDragOver(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        const target = e.target.closest('.screen-card');
+        if (!target || target === dragged) return;
+        // Clear previous highlights
+        grid.querySelectorAll('.screen-card').forEach(function (c) {
+          c.classList.remove('drag-over');
+        });
+        target.classList.add('drag-over');
+      }
+
+      function onDragLeave(e) {
+        const target = e.target.closest('.screen-card');
+        if (target) target.classList.remove('drag-over');
+      }
+
+      function onDrop(e) {
+        e.preventDefault();
+        const target = e.target.closest('.screen-card');
+        if (!target || target === dragged || !dragged) return;
+        target.classList.remove('drag-over');
+
+        // Determine insertion position: drop before or after target based on cursor Y
+        const rect = target.getBoundingClientRect();
+        const midY = rect.top + rect.height / 2;
+        if (e.clientY < midY) {
+          grid.insertBefore(dragged, target);
+        } else {
+          grid.insertBefore(dragged, target.nextSibling);
+        }
+      }
+
+      // --- Attach listeners ---
+      function attachListeners() {
+        grid.querySelectorAll('.screen-card').forEach(function (card) {
+          card.addEventListener('dragstart', onDragStart);
+          card.addEventListener('dragend', onDragEnd);
+          card.addEventListener('dragover', onDragOver);
+          card.addEventListener('dragleave', onDragLeave);
+          card.addEventListener('drop', onDrop);
+
+          // Prevent link clicks from triggering drag accidentally
+          card.querySelectorAll('a').forEach(function (a) {
+            a.addEventListener('mousedown', function (e) { e.stopPropagation(); });
+          });
+        });
+      }
+
+      restoreOrder();
+      attachListeners();
+    })();
+  </script>
 </body>
 </html>
