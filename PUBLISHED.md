@@ -1,1 +1,1 @@
-﻿# Site published
+# Site published
