@@ -3845,6 +3845,8 @@
       // ── Drag & Drop ──────────────────────────────────────
       let _dragCard = null;
       let _dragSrcCol = null;
+      let _lastDragCard = null;
+      let _lastDragSrcCol = null;
       function makeDraggable(card, colId) {
         card.setAttribute("draggable", "true");
         // Remove old listeners by replacing with a clone, then re-attach
@@ -3855,12 +3857,15 @@
         card._dragStartFn = (e) => {
           _dragCard = card;
           _dragSrcCol = card.dataset.col;
+          _lastDragCard = card;
+          _lastDragSrcCol = card.dataset.col;
           setTimeout(() => card.classList.add("dragging"), 0);
           e.dataTransfer.effectAllowed = "move";
         };
         card._dragEndFn = () => {
           card.classList.remove("dragging");
           _dragCard = null;
+          _dragSrcCol = null;
         };
         card.addEventListener("dragstart", card._dragStartFn);
         card.addEventListener("dragend", card._dragEndFn);
@@ -3882,30 +3887,36 @@
           zone.addEventListener("drop", (e) => {
             e.preventDefault();
             zone.classList.remove("col-drop-active");
-            if (!_dragCard || _dragSrcCol === colId) return;
+            // Use the captured card — _dragCard may already be null if dragend fired first
+            const card = _dragCard || _lastDragCard;
+            const srcCol = _dragSrcCol || _lastDragSrcCol;
+            if (!card || srcCol === colId) return;
             // Remove from source column
-            const srcZone = document.getElementById("col-cards-" + _dragSrcCol);
-            _dragCard.remove();
-            if (!srcZone.querySelector(".task-card")) {
+            const srcZone = document.getElementById("col-cards-" + srcCol);
+            if (srcZone && card.parentNode === srcZone)
+              srcZone.removeChild(card);
+            if (srcZone && !srcZone.querySelector(".task-card")) {
               srcZone.innerHTML = '<div class="col-empty">No tasks yet</div>';
             }
             // Update source count
-            const srcCount = document.getElementById(
-              "col-count-" + _dragSrcCol,
-            );
-            srcCount.textContent = Math.max(
-              0,
-              parseInt(srcCount.textContent || "0") - 1,
-            );
+            const srcCount = document.getElementById("col-count-" + srcCol);
+            if (srcCount)
+              srcCount.textContent = Math.max(
+                0,
+                parseInt(srcCount.textContent || "0") - 1,
+              );
             // Add to target column
             const empty = zone.querySelector(".col-empty");
             if (empty) empty.remove();
-            _dragCard.dataset.col = colId;
-            makeDraggable(_dragCard, colId);
-            zone.appendChild(_dragCard);
+            card.dataset.col = colId;
+            makeDraggable(card, colId);
+            zone.appendChild(card);
             // Update target count
             const dstCount = document.getElementById("col-count-" + colId);
-            dstCount.textContent = parseInt(dstCount.textContent || "0") + 1;
+            if (dstCount)
+              dstCount.textContent = parseInt(dstCount.textContent || "0") + 1;
+            _lastDragCard = null;
+            _lastDragSrcCol = null;
           });
         });
       }
